@@ -2,7 +2,7 @@ import { drizzle as drizzlePostgresJs } from "drizzle-orm/postgres-js";
 import { drizzle as drizzleNeonHttp } from "drizzle-orm/neon-http";
 import * as schema from "./schema.ts";
 import postgresJs from "postgres";
-import { neon } from "@neon/serverless";
+import { neon } from "@neondatabase/serverless";
 import "@std/dotenv/load";
 
 const DATABASE_URL = Deno.env.get("DATABASE_URL");
