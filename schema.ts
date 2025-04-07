@@ -1,0 +1,95 @@
+import { cosineDistance, desc, gt, like, or, sql } from "drizzle-orm";
+import {
+  index,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+  vector,
+} from "drizzle-orm/pg-core";
+import { OllamaEmbeddings } from "@langchain/ollama";
+import type { Database } from "./db.ts";
+import { getLogger } from "@logtape/logtape";
+
+export const postsTable = pgTable("posts", {
+  id: serial("id").primaryKey(),
+  title: text().notNull(),
+  body: text().notNull(),
+  createdAt: timestamp(),
+  internetArchiveUrl: text().notNull(),
+  embedding: vector({ dimensions: 1024 }).notNull(),
+}, (table) => [
+  index("embeddingIndex").using(
+    "hnsw",
+    table.embedding.op("vector_cosine_ops"),
+  ),
+]);
+
+const embeddingModel = new OllamaEmbeddings({
+  model: "bge-m3",
+  truncate: true,
+});
+
+export const generateEmbedding = (post: string) => {
+  return embeddingModel.embedQuery(post);
+};
+
+export async function searchPosts(
+  db: Database,
+  keyword: string,
+  limit = 10,
+) {
+  const embedding = await generateEmbedding(keyword);
+
+  const similarity = sql<number>`1 - (${
+    cosineDistance(postsTable.embedding, embedding)
+  }) + (CASE
+    WHEN (${like(postsTable.title, `%${keyword}%`)}) THEN 1
+    ELSE 0
+  END) + (CASE
+    WHEN (${like(postsTable.body, `%${keyword}%`)}) THEN 1
+    ELSE 0
+  END)`;
+
+  const result = db.select({
+    id: postsTable.id,
+    title: postsTable.title,
+    body: postsTable.body,
+    createdAt: postsTable.createdAt,
+    similarity,
+  })
+    .from(postsTable)
+    .where(
+      or(gt(similarity, 0.5)),
+    )
+    .orderBy((t) => desc(t.similarity))
+    .limit(limit);
+
+  return result;
+}
+
+// Example of selecting posts with vector similarity
+export async function getPostsBySimilarity(
+  db: Database,
+  keyword: string,
+  limit = 10,
+) {
+  const embedding = await generateEmbedding(keyword);
+
+  const similarity = sql<number>`1 - (${
+    cosineDistance(postsTable.embedding, embedding)
+  })`;
+
+  const result = db.select({
+    id: postsTable.id,
+    title: postsTable.title,
+    createdAt: postsTable.createdAt,
+    similarity,
+  })
+    .from(postsTable)
+    .where(gt(similarity, 0.5))
+    .orderBy((t) => desc(t.similarity))
+    .limit(limit);
+
+  return result;
+}

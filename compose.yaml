@@ -1,0 +1,16 @@
+services:
+  pgvector:
+    image: pgvector/pgvector:pg17
+    container_name: pgvector
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    command: ["postgres", "-c", "max_connections=17"]
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+
+volumes:
+  pgvector_data:

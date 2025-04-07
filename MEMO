@@ -1,0 +1,14 @@
+# Just memo.
+# 
+# List URL 
+# https://web.archive.org/web/timemap/json?url=agile.egloos.com/&fl=timestamp:6,original&matchType=prefix&filter=statuscode:200&filter=mimetype:text/html&collapse=urlkey&limit=100000
+# https://web.archive.org/web/timemap/json?url=agile.egloos.com/&fl=timestamp:6,original&matchType=prefix&filter=statuscode:200&filter=original:%5Ehttp%3A%2F%2Fagile.egloos.com%2F%5B0-9%5D%2B%24&filter=mimetype:text/html&collapse=urlkey&limit=150000
+# 
+# List URL with endtimestamp
+# https://web.archive.org/web/timemap/json?url=agile.egloos.com/&fl=endtimestamp,original&matchType=prefix&filter=statuscode:200&filter=original:%5Ehttp%3A%2F%2Fagile.egloos.com%2F%5B0-9%5D%2B%24&filter=mimetype:text/html&collapse=urlkey&limit=150000
+#
+# Search Available archives.
+# https://web.archive.org/cdx/search/cdx?url=http://agile.egloos.com/5888372&output=json&fl=original,timestamp,statuscode,mimetype&filter=mimetype:text/html&filter=statuscode:200
+#
+# Map to archive urls.
+# pbpaste | jq '[.[] | select(.[1] | test("^http://agile\\.egloos\\.com/[0-9]+$")) | "https://web.archive.org/web/\(.[0])/\(.[1])"]'

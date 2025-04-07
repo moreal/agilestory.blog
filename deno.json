@@ -1,0 +1,55 @@
+{
+  "tasks": {
+    "tool:download": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents main.ts download",
+    "tool:dump-file": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents main.ts dump-file",
+    "tool:dump-db": "deno run --allow-read=.env --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents main.ts dump-db",
+
+    "db:drizzle-kit": "deno run -A npm:drizzle-kit@^0.30.6",
+    "db:migrate": "deno run -A npm:drizzle-kit@^0.30.6 migrate",
+    "db:migrate:generate": "deno run -A npm:drizzle-kit@^0.30.6 generate",
+
+    "web:check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
+    "web:cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run --unstable -A -",
+    "web:manifest": "deno task cli manifest $(pwd)",
+    "web:start": "deno run -A --watch=static/,routes/ dev.ts",
+    "web:build": "deno run -A dev.ts build",
+    "web:preview": "deno run -A main.ts",
+    "web:update": "deno run -A -r https://fresh.deno.dev/update ."
+  },
+  "imports": {
+    "@logtape/logtape": "jsr:@logtape/logtape@^0.9.0",
+    "@neon/serverless": "jsr:@neon/serverless@^1.0.0",
+    "drizzle-kit": "npm:drizzle-kit@^0.30.6",
+    "drizzle-orm": "npm:drizzle-orm@^0.41.0",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
+    "@langchain/ollama": "npm:@langchain/ollama@^0.2.0",
+    "postgres": "npm:postgres@^3.4.5",
+    "$fresh/": "https://deno.land/x/fresh@1.7.3/",
+    "preact": "https://esm.sh/preact@10.22.0",
+    "preact/": "https://esm.sh/preact@10.22.0/",
+    "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
+    "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
+    "tailwindcss": "npm:tailwindcss@3.4.1",
+    "tailwindcss/": "npm:/tailwindcss@3.4.1/",
+    "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
+    "$std/": "https://deno.land/std@0.216.0/",
+    "@/": "./"
+  },
+  "nodeModulesDir": "auto",
+  "unstable": ["temporal"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
+  },
+  "exclude": [
+    "**/_fresh/*"
+  ],
+  "lint": {
+    "rules": {
+      "tags": [
+        "fresh",
+        "recommended"
+      ]
+    }
+  }
+}
