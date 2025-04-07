@@ -53,8 +53,7 @@ export default function SearchPage(props: PageProps<Data>) {
     return (
       <div class="px-auto py-8 mx-auto">
         <div class="max-w-screen-sm mx-auto flex flex-col items-center justify-center">
-          <h1 class="text-2xl font-bold mb-2">검색</h1>
-          <span class="text-xs">검색어를 입력하세요.</span>
+          <span class="text-xs">검색어가 없습니다. 검색어를 입력해주세요.</span>
         </div>
       </div>
     );
