@@ -71,7 +71,7 @@ export default function SearchPage(props: PageProps<Data>) {
           <ol class="w-full list-none m-0 p-0 flex flex-col gap-1">
             {result.posts.map(({ title, createdAt, id }) => (
               <li class="w-full list-none" key={title}>
-                <a class="flex flex-row gap-4" href={`posts/${id}`}>
+                <a class="flex flex-row gap-4" href={`${id}`}>
                   <span class="font-light w-24 text-gray-400">
                     {formatDate(createdAt!)}
                   </span>

@@ -42,7 +42,7 @@ export default function Home({ data: { posts } }: PageProps<Data>) {
             <li class="w-full list-none" key={index}>
               <a
                 class="flex flex-row w-full gap-4"
-                href={`posts/${id}`}
+                href={`/${id}`}
               >
                 <span class="font-light w-24 text-gray-400 font-md">
                   {formatDate(createdAt!)}
