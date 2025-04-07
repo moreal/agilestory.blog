@@ -4,23 +4,18 @@ export default function Error404() {
   return (
     <>
       <Head>
-        <title>404 - Page not found</title>
+        <title>404 - 없는 페이지 입니다.</title>
       </Head>
-      <div class="px-4 py-8 mx-auto bg-[#86efac]">
-        <div class="max-w-screen-md mx-auto flex flex-col items-center justify-center">
-          <img
-            class="my-6"
-            src="/logo.svg"
-            width="128"
-            height="128"
-            alt="the Fresh logo: a sliced lemon dripping with juice"
-          />
-          <h1 class="text-4xl font-bold">404 - Page not found</h1>
-          <p class="my-4">
-            The page you were looking for doesn't exist.
-          </p>
-          <a href="/" class="underline">Go back home</a>
-        </div>
+      <div class="flex flex-col items-center justify-center gap-4">
+        <h1 class="text-xl font-extralight">
+          해당 경로에 존재하는 페이지가 없습니다.
+        </h1>
+        <span>
+          <a href="/" class="underline underline-offset-2 font-medium">
+            목록으로 가시거나
+          </a>{" "}
+          위 검색창에 검색어를 입력해보세요.
+        </span>
       </div>
     </>
   );
