@@ -34,16 +34,45 @@ export const generateEmbedding = (post: string) => {
   return embeddingModel.embedQuery(post);
 };
 
+export async function safeGeneratingEmbedding(
+  text: string,
+): Promise<
+  {
+    status: "ok";
+    embedding: number[];
+  } | {
+    status: "error";
+  }
+> {
+  try {
+    return {
+      status: "ok",
+      embedding: await generateEmbedding(text),
+    };
+  } catch {
+    return {
+      status: "error",
+    };
+  }
+}
+
 export async function searchPosts(
   db: Database,
   keyword: string,
   limit = 10,
 ) {
-  const embedding = await generateEmbedding(keyword);
+  const embeddingResult = await safeGeneratingEmbedding(keyword);
 
-  const similarity = sql<number>`1 - (${
-    cosineDistance(postsTable.embedding, embedding)
-  }) + (CASE
+  let embeddingSimilarity;
+  if (embeddingResult.status === "ok") {
+    embeddingSimilarity = sql<number>`1 - (${
+      cosineDistance(postsTable.embedding, embeddingResult.embedding)
+    })`;
+  } else {
+    embeddingSimilarity = sql<number>`0.0`;
+  }
+
+  const similarity = sql<number>`${embeddingSimilarity} + (CASE
     WHEN (${like(postsTable.title, `%${keyword}%`)}) THEN 1
     ELSE 0
   END) + (CASE
