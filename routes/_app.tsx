@@ -9,6 +9,7 @@ export default function App({ Component, state }: PageProps) {
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{constants.TITLE}{titleSuffix}</title>
+        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
         <link rel="stylesheet" href="/styles.css" />
       </head>
       <body class="flex flex-col h-screen justify-between gap-8">
