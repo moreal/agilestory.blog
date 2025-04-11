@@ -1,10 +1,7 @@
-<svg width="83" height="93" viewBox="0 0 83 93" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="30.6781" y="0.640856" width="54.8533" height="75.2613" transform="rotate(20 30.6781 0.640856)" fill="white" stroke="black"/>
-<rect x="28.5299" y="1.71496" width="54.8533" height="75.2613" transform="rotate(20 28.5299 1.71496)" fill="white" stroke="black"/>
-<rect x="26.3817" y="2.78907" width="54.8533" height="75.2613" transform="rotate(20 26.3817 2.78907)" fill="white" stroke="black"/>
-<circle cx="38.3094" cy="46.0537" r="13.25" transform="rotate(20 38.3094 46.0537)" fill="white" stroke="black" stroke-width="2.5"/>
-<line x1="15.4536" y1="51.8352" x2="38.0062" y2="60.0437" stroke="black" stroke-width="2.5"/>
-<line x1="33.3078" y1="58.3336" x2="53.0413" y2="65.516" stroke="black" stroke-width="2.5"/>
-<path d="M48 68.4572L53.2979 65.5967L51.0782 60" stroke="black" stroke-width="2.5"/>
-<path d="M50.1721 32.4162L43.1398 33.1556L43.8791 40.1879" stroke="black" stroke-width="2.5"/>
+<svg width="42" height="38" viewBox="0 0 42 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="19.5" cy="18.5" r="13.25" stroke="black" stroke-width="2.5"/>
+<line x1="1.09278e-07" y1="31.75" x2="24" y2="31.75" stroke="black" stroke-width="2.5"/>
+<line x1="19" y1="31.75" x2="40" y2="31.75" stroke="black" stroke-width="2.5"/>
+<path d="M36.2687 36.238L40.2687 31.738L36.2687 27.238" stroke="black" stroke-width="2.5"/>
+<path d="M25.983 1.62768L19.6277 4.72766L22.7277 11.083" stroke="black" stroke-width="2.5"/>
 </svg>
