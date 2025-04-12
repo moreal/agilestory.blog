@@ -107,8 +107,8 @@ export default function Post(props: PageProps<Data>) {
       <Head>
         <title>{title}</title>
       </Head>
-      <div class="max-w-screen-sm mx-auto flex flex-col items-center justify-center gap-8">
-        <header class="px-4 w-full max-w-full flex flex-col items-center justify-center gap-8">
+      <div class="max-w-screen-sm mx-auto flex flex-col items-center justify-center gap-8 px-4">
+        <header class="w-full max-w-full flex flex-col items-center justify-center gap-8">
           <nav class="w-full">
             <a class="left w-full max-w-xl text-sm font-semibold" href="/">
               {"<"} 목록으로 가기
@@ -124,11 +124,12 @@ export default function Post(props: PageProps<Data>) {
           </div>
         </header>
         <div
-          class="leading-[1.6] post-content px-4"
+          class="leading-[1.6] post-content"
           dangerouslySetInnerHTML={{ __html: sanitizedBody }}
         >
         </div>
-        <footer class="w-full px-4">
+        <hr class="w-full" />
+        <footer class="w-full">
           <nav class="w-full">
             <ul class="flex flex-col justify-between w-full gap-4">
               {props.data.prevPost && (
