@@ -44,6 +44,10 @@
   unicode-bidi: isolate;
 }
 
+.post-content * {
+  max-width: 100%;
+}
+
 .post-content ul {
   display: block;
   list-style-type: disc;
