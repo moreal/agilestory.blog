@@ -1,7 +1,7 @@
 import { Handlers, LayoutConfig, PageProps } from "$fresh/server.ts";
 import { db } from "@/db.ts";
 import { postsTable } from "@/schema.ts";
-import { eq } from "drizzle-orm";
+import { and, asc, desc, eq, gt, isNotNull, lt } from "drizzle-orm";
 import { Head } from "$fresh/runtime.ts";
 
 interface Data {
@@ -11,6 +11,16 @@ interface Data {
     createdAt: Date | null;
     internetArchiveUrl: string;
   };
+  prevPost: {
+    title: string;
+    createdAt: Date;
+    id: number;
+  } | null;
+  nextPost: {
+    title: string;
+    createdAt: Date;
+    id: number;
+  } | null;
 }
 
 export const handler: Handlers<Data> = {
@@ -18,14 +28,58 @@ export const handler: Handlers<Data> = {
     const { id: rawId } = ctx.params;
     const id = Number(rawId || "0");
 
-    const result = await db.select({
-      title: postsTable.title,
-      createdAt: postsTable.createdAt,
-      body: postsTable.body,
-      internetArchiveUrl: postsTable.internetArchiveUrl,
-    }).from(postsTable).where(
-      eq(postsTable.id, id),
-    ).limit(1);
+    // Fetch current post
+    const currentPostResult = await db
+      .select({
+        title: postsTable.title,
+        createdAt: postsTable.createdAt,
+        body: postsTable.body,
+        internetArchiveUrl: postsTable.internetArchiveUrl,
+      })
+      .from(postsTable)
+      .where(eq(postsTable.id, id))
+      .limit(1);
+
+    // NOTE: Ensure lt, gt, desc, asc are imported from "drizzle-orm"
+    // import { eq, lt, gt, desc, asc } from "drizzle-orm";
+
+    // Fetch previous post (post with the largest ID smaller than the current one)
+    const prevPostResult = await db
+      .select({
+        id: postsTable.id,
+        title: postsTable.title,
+        createdAt: postsTable.createdAt,
+      })
+      .from(postsTable)
+      .where(and(lt(postsTable.id, id), isNotNull(postsTable.createdAt)))
+      .orderBy(desc(postsTable.id))
+      .limit(1);
+
+    // Fetch next post (post with the smallest ID larger than the current one)
+    const nextPostResult = await db
+      .select({
+        id: postsTable.id,
+        title: postsTable.title,
+        createdAt: postsTable.createdAt,
+      })
+      .from(postsTable)
+      .where(and(gt(postsTable.id, id), isNotNull(postsTable.createdAt)))
+      .orderBy(asc(postsTable.id))
+      .limit(1);
+
+    const result = currentPostResult; // Keep existing check logic
+    const prevPost = prevPostResult.length > 0
+      ? {
+        ...prevPostResult[0],
+        createdAt: prevPostResult[0].createdAt!,
+      }
+      : null;
+    const nextPost = nextPostResult.length > 0
+      ? {
+        ...nextPostResult[0],
+        createdAt: nextPostResult[0].createdAt!,
+      }
+      : null;
 
     if (result.length === 0) {
       return ctx.renderNotFound();
@@ -33,6 +87,8 @@ export const handler: Handlers<Data> = {
 
     return ctx.render({
       post: result[0],
+      prevPost,
+      nextPost,
     });
   },
 };
@@ -72,6 +128,30 @@ export default function Post(props: PageProps<Data>) {
           dangerouslySetInnerHTML={{ __html: sanitizedBody }}
         >
         </div>
+        <footer class="w-full px-4">
+          <nav class="w-full">
+            <ul class="flex flex-col justify-between w-full gap-4">
+              {props.data.prevPost && (
+                <li class="w-full text-sm font-semibold text-left">
+                  <a
+                    href={`/${props.data.prevPost.id}`}
+                  >
+                    {"<"} {props.data.prevPost.title}
+                  </a>
+                </li>
+              )}
+              {props.data.nextPost && (
+                <li class="w-full text-sm font-semibold text-right">
+                  <a
+                    href={`/${props.data.nextPost.id}`}
+                  >
+                    {props.data.nextPost.title} {">"}
+                  </a>
+                </li>
+              )}
+            </ul>
+          </nav>
+        </footer>
       </div>
     </>
   );
