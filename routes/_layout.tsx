@@ -5,7 +5,7 @@ export default function Layout({ Component }: PageProps) {
   return (
     <>
       <header>
-        <div class="flex flex-col items-center justify-center mt-8 gap-8">
+        <div class="flex flex-col items-center justify-center mt-4 gap-8 p-4">
           <a href="/">
             <h1 class="text-2xl font-bold">{constants.TITLE}</h1>
           </a>

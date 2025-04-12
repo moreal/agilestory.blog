@@ -14,7 +14,7 @@ export default function App({ Component, state }: PageProps) {
       </head>
       <body class="flex flex-col h-screen justify-between gap-8">
         <header>
-          <div class="bg-yellow-200 text-black p-2 text-center">
+          <div class="bg-yellow-200 text-black px-4 py-2 break-keep text-center">
             <p>{constants.WARNING_MESSAGE}</p>
           </div>
         </header>

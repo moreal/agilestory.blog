@@ -35,7 +35,7 @@ function formatDate(date: Date): string {
 
 export default function Home({ data: { posts } }: PageProps<Data>) {
   return (
-    <div class="px-auto mx-auto">
+    <div class="px-4 mx-auto">
       <div class="max-w-screen-md mx-auto flex flex-col items-center justify-center gap-16">
         <div class="flex flex-col gap-2 items-center justify-center">
           {posts.map(({ title, createdAt, id }, index) => (
@@ -44,7 +44,7 @@ export default function Home({ data: { posts } }: PageProps<Data>) {
                 class="flex flex-row w-full gap-4"
                 href={`/${id}`}
               >
-                <span class="font-light w-24 text-gray-400 font-md">
+                <span class="font-light w-24 flex-shrink-0 text-gray-400 font-md">
                   {formatDate(createdAt!)}
                 </span>
                 <span class="border-b-2 text-left">
