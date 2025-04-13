@@ -109,21 +109,21 @@ export default function (props: PageProps<Data>) {
     /(href|src)="https:\/\/web\.archive\.org\/web\/[^\/]+\/(http[^"]+)"/g;
   const sanitizedBodyWithLinks = sanitizedBody.replace(
     regex,
-    (match: string, attribute: string, path: string) => {
+    (match: string, attribute: string, url: string) => {
       const SELF = "http://agile.egloos.com";
       const ALLOWED_PREFIXES = [
         "http://www.yes24.com",
         "http://www.youtube.com",
       ] as const;
 
-      if (path.startsWith(SELF)) {
-        const newUrl = path.replace(SELF, "/");
+      if (url.startsWith(SELF)) {
+        const newUrl = url.replace(SELF, "");
         return `${attribute}="${newUrl}"`;
       }
 
       for (const prefix of ALLOWED_PREFIXES) {
-        if (path.startsWith(prefix)) {
-          return `${attribute}="${path}"`;
+        if (url.startsWith(prefix)) {
+          return `${attribute}="${url}"`;
         }
       }
 
