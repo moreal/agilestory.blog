@@ -2,7 +2,7 @@ import { parseRawContent, type RawContent } from "../../models/raw-content.ts";
 import type { KeyValueStore } from "../kv/mod.ts";
 import type { RawContentRepository } from "./common.ts";
 
-export class PersistentRawContentRepository implements RawContentRepository {
+export class KVPersistentRawContentRepository implements RawContentRepository {
   constructor(private readonly keyValueStore: KeyValueStore) {}
 
   get(url: string): Promise<RawContent | undefined> {

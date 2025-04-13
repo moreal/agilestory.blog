@@ -1,2 +1,2 @@
-export { PersistentRawContentRepository } from "./persistent.ts";
+export { KVPersistentRawContentRepository } from "./persistent.ts";
 export type { RawContentRepository } from "./common.ts";
