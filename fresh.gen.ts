@@ -8,7 +8,7 @@ import * as $_app from "./routes/_app.tsx";
 import * as $_layout from "./routes/_layout.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $search from "./routes/search.tsx";
-import * as $Post from "./islands/Post.tsx";
+
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -20,9 +20,7 @@ const manifest = {
     "./routes/index.tsx": $index,
     "./routes/search.tsx": $search,
   },
-  islands: {
-    "./islands/Post.tsx": $Post,
-  },
+  islands: {},
   baseUrl: import.meta.url,
 } satisfies Manifest;
 
