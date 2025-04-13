@@ -3,6 +3,7 @@ import { db } from "@/db.ts";
 import { postsTable } from "@/schema.ts";
 import { and, asc, desc, eq, gt, isNotNull, lt } from "drizzle-orm";
 import { Head } from "$fresh/runtime.ts";
+import * as constants from "../constants.ts";
 
 interface Data {
   post: {
@@ -165,7 +166,8 @@ export default function Post(props: PageProps<Data>) {
                   <a
                     href={`/${props.data.prevPost.id}`}
                   >
-                    {"<"} {props.data.prevPost.title}
+                    <p>{"<"} {constants.PREVIOUS_POST_MESSAGE}</p>
+                    <p class="text-gray-600">{props.data.prevPost.title}</p>
                   </a>
                 </li>
               )}
@@ -174,7 +176,8 @@ export default function Post(props: PageProps<Data>) {
                   <a
                     href={`/${props.data.nextPost.id}`}
                   >
-                    {props.data.nextPost.title} {">"}
+                    <p>{constants.NEXT_POST_MESSAGE} {">"}</p>
+                    <p class="text-gray-600">{props.data.nextPost.title}</p>
                   </a>
                 </li>
               )}
