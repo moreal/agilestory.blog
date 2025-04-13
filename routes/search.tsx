@@ -62,7 +62,7 @@ export default function SearchPage(props: PageProps<Data>) {
   const keyword = result.keyword;
   return (
     <div>
-      <div class="px-auto mx-auto">
+      <div class="px-4">
         <div class="max-w-xl mx-auto flex flex-col items-center justify-center gap-4">
           <h1 class="text-sm w-full text-left font-light">
             "<span class="font-semibold">{keyword}</span>"의 검색 결과

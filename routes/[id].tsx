@@ -140,8 +140,10 @@ export default function Post(props: PageProps<Data>) {
               {"<"} 목록으로 가기
             </a>
           </nav>
-          <div class="w-full max-x-xl flex flex-col items-center justify-center">
-            <h1 class="text-2xl font-bold mb-2">{title}</h1>
+          <div class="w-full max-x-xl flex flex-col px-8 items-center justify-center gap-2">
+            <h1 class="text-2xl font-bold break-keep text-center">
+              {title}
+            </h1>
             <span class="text-xs">
               {createdAt?.toLocaleString()} |{" "}
               <a href={internetArchiveUrl}>Internet Archive에서 보기</a>
