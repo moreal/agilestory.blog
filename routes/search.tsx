@@ -46,7 +46,7 @@ function formatDate(date: Date): string {
   }-${String(date.getDate()).padStart(2, "0")}`;
 }
 
-export default function SearchPage(props: PageProps<Data>) {
+export default function (props: PageProps<Data>) {
   const result = props.data.result;
 
   if (result.status === "no-query") {

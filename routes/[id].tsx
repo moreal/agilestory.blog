@@ -98,7 +98,7 @@ export const config: LayoutConfig = {
   skipInheritedLayouts: true,
 };
 
-export default function Post(props: PageProps<Data>) {
+export default function (props: PageProps<Data>) {
   const { createdAt, title, body, internetArchiveUrl } = props.data.post;
 
   const sanitizedBody = body.replaceAll(/<hr>/g, '<hr class="my-4">');

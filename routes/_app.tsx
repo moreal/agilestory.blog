@@ -1,7 +1,7 @@
 import { type PageProps } from "$fresh/server.ts";
 import * as constants from "@/constants.ts";
 
-export default function App({ Component, state }: PageProps) {
+export default function ({ Component, state }: PageProps) {
   const titleSuffix = state.subtitle ? ` - ${state.subtitle}` : "";
   return (
     <html>

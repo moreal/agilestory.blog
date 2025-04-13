@@ -1,7 +1,7 @@
 import { PageProps } from "$fresh/server.ts";
 import * as constants from "../constants.ts";
 
-export default function Layout({ Component }: PageProps) {
+export default function ({ Component }: PageProps) {
   return (
     <>
       <header>

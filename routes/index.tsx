@@ -33,7 +33,7 @@ function formatDate(date: Date): string {
   }-${String(date.getDate()).padStart(2, "0")}`;
 }
 
-export default function Home({ data: { posts } }: PageProps<Data>) {
+export default function ({ data: { posts } }: PageProps<Data>) {
   return (
     <div class="px-4 mx-auto">
       <div class="max-w-screen-md mx-auto flex flex-col items-center justify-center gap-16">
