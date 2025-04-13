@@ -102,6 +102,32 @@ export default function Post(props: PageProps<Data>) {
 
   const sanitizedBody = body.replaceAll(/<hr>/g, '<hr class="my-4">');
 
+  const regex =
+    /(href|src)="https:\/\/web\.archive\.org\/web\/[^\/]+\/(http[^"]+)"/g;
+  const sanitizedBodyWithLinks = sanitizedBody.replace(
+    regex,
+    (match: string, attribute: string, path: string) => {
+      const SELF = "http://agile.egloos.com";
+      const ALLOWED_PREFIXES = [
+        "http://www.yes24.com",
+        "http://www.youtube.com",
+      ] as const;
+
+      if (path.startsWith(SELF)) {
+        const newUrl = path.replace(SELF, "/");
+        return `${attribute}="${newUrl}"`;
+      }
+
+      for (const prefix of ALLOWED_PREFIXES) {
+        if (path.startsWith(prefix)) {
+          return `${attribute}="${path}"`;
+        }
+      }
+
+      return match;
+    },
+  );
+
   return (
     <>
       <Head>
@@ -125,7 +151,7 @@ export default function Post(props: PageProps<Data>) {
         </header>
         <div
           class="leading-[1.6] post-content"
-          dangerouslySetInnerHTML={{ __html: sanitizedBody }}
+          dangerouslySetInnerHTML={{ __html: sanitizedBodyWithLinks }}
         >
         </div>
         <hr class="w-full" />
