@@ -8,6 +8,10 @@ import {
   RawPagesLoader,
   WaybackMachineServiceImpl,
 } from "@/services/mod.ts";
+import {
+  EmbeddingService,
+  OllamaEmbeddingService,
+} from "@/services/embedding/mod.ts";
 
 export async function prepareDependencies() {
   const AGILEDATA_PATH = Deno.env.get("AGILEDATA") || "data";
@@ -26,10 +30,15 @@ export async function prepareDependencies() {
     rawContentRepository,
     new WaybackMachineServiceImpl(),
   );
+  const embeddingService: EmbeddingService = new OllamaEmbeddingService({
+    model: "bge-m3",
+    truncate: true,
+  });
 
   return {
     rawPagesLoader,
     rawContentLoader,
     rawContentProcessor,
+    embeddingService,
   };
 }

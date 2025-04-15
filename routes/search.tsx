@@ -2,6 +2,7 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { db } from "@/db.ts";
 import { searchPosts } from "@/schema.ts";
 import { YmdDate } from "@/components/YmdDate.tsx";
+import { embeddingService } from "@/singleton.ts";
 
 interface Data {
   result: {
@@ -29,7 +30,7 @@ export const handler: Handlers<Data> = {
       });
     }
 
-    const result = await searchPosts(db, q, 10);
+    const result = await searchPosts(embeddingService, db, q, 10);
 
     return ctx.render({
       result: {

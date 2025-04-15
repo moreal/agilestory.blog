@@ -7,8 +7,8 @@ import {
   timestamp,
   vector,
 } from "drizzle-orm/pg-core";
-import { OllamaEmbeddings } from "@langchain/ollama";
 import type { Database } from "./db.ts";
+import type { EmbeddingService } from "@/services/embedding/mod.ts";
 
 export const postsTable = pgTable("posts", {
   id: serial("id").primaryKey(),
@@ -24,16 +24,8 @@ export const postsTable = pgTable("posts", {
   ),
 ]);
 
-const embeddingModel = new OllamaEmbeddings({
-  model: "bge-m3",
-  truncate: true,
-});
-
-export const generateEmbedding = (post: string) => {
-  return embeddingModel.embedQuery(post);
-};
-
 export async function safeGeneratingEmbedding(
+  embeddingService: EmbeddingService,
   text: string,
 ): Promise<
   {
@@ -46,7 +38,7 @@ export async function safeGeneratingEmbedding(
   try {
     return {
       status: "ok",
-      embedding: await generateEmbedding(text),
+      embedding: await embeddingService.getEmbeddings(text),
     };
   } catch {
     return {
@@ -56,11 +48,15 @@ export async function safeGeneratingEmbedding(
 }
 
 export async function searchPosts(
+  embeddingService: EmbeddingService,
   db: Database,
   keyword: string,
   limit = 10,
 ) {
-  const embeddingResult = await safeGeneratingEmbedding(keyword);
+  const embeddingResult = await safeGeneratingEmbedding(
+    embeddingService,
+    keyword,
+  );
 
   let embeddingSimilarity;
   if (embeddingResult.status === "ok") {
@@ -102,11 +98,12 @@ export async function searchPosts(
 
 // Example of selecting posts with vector similarity
 export async function getPostsBySimilarity(
+  embeddingService: EmbeddingService,
   db: Database,
   keyword: string,
   limit = 10,
 ) {
-  const embedding = await generateEmbedding(keyword);
+  const embedding = await embeddingService.getEmbeddings(keyword);
 
   const similarity = sql<number>`1 - (${
     cosineDistance(postsTable.embedding, embedding)

@@ -3,14 +3,18 @@ import { getLogger } from "@logtape/logtape";
 import { configureLogging } from "./logging.ts";
 import { prepareDependencies } from "./dependency.ts";
 import { db } from "@/db.ts";
-import { generateEmbedding, postsTable } from "@/schema.ts";
+import { postsTable } from "@/schema.ts";
 import { buildArchiveUrl } from "@/services/mod.ts";
 
 async function main() {
   await configureLogging();
 
-  const { rawPagesLoader, rawContentLoader, rawContentProcessor } =
-    await prepareDependencies();
+  const {
+    rawPagesLoader,
+    rawContentLoader,
+    rawContentProcessor,
+    embeddingService,
+  } = await prepareDependencies();
 
   const baseLogger = getLogger(["downloader", "main"]);
   if (Deno.args.length < 1) {
@@ -93,7 +97,7 @@ async function main() {
         /\s+/g,
         " ",
       ).trim();
-      const embedding = await generateEmbedding(strippedBody);
+      const embedding = await embeddingService.getEmbeddings(strippedBody);
       insertValues.push({
         id: content.id,
         title: content.title,
