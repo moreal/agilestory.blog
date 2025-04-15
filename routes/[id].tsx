@@ -147,9 +147,11 @@ export default function (props: PageProps<Data>) {
               {title}
             </h1>
             <div class="flex flex-row items-center justify-center w-full gap-1">
-              <span class="text-xs">
-                {createdAt?.toLocaleString()}
-              </span>
+              {createdAt && (
+                <span class="text-xs">
+                  {createdAt.toLocaleString()}
+                </span>
+              )}
               <span>
                 |
               </span>
