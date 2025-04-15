@@ -23,7 +23,7 @@ export const handler: Handlers<Data> = {
     );
 
     return ctx.render({
-      posts: posts,
+      posts: posts as Data["posts"],
     });
   },
 };
