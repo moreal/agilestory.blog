@@ -147,10 +147,17 @@ export default function (props: PageProps<Data>) {
             <h1 class="text-2xl font-bold break-keep text-center">
               {title}
             </h1>
-            <span class="text-xs">
-              {createdAt?.toLocaleString()} |{" "}
-              <a href={internetArchiveUrl}>Internet Archive에서 보기</a>
-            </span>
+            <div class="flex flex-row items-center justify-center w-full gap-1">
+              <span class="text-xs">
+                {createdAt?.toLocaleString()}
+              </span>
+              <span>
+                |
+              </span>
+              <span class="text-xs">
+                <a href={internetArchiveUrl}>Internet Archive에서 보기</a>
+              </span>
+            </div>
             <hr class="w-full mt-6" />
           </div>
         </header>
