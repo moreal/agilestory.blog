@@ -8,7 +8,7 @@ interface Data {
   posts: {
     id: number;
     title: string;
-    createdAt: Date | null;
+    createdAt: Date;
   }[];
 }
 

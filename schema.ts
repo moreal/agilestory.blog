@@ -80,7 +80,7 @@ export async function searchPosts(
     ELSE 0
   END)`;
 
-  const result = db.select({
+  const result = await db.select({
     id: postsTable.id,
     title: postsTable.title,
     body: postsTable.body,
@@ -94,7 +94,13 @@ export async function searchPosts(
     .orderBy((t) => desc(t.similarity))
     .limit(limit);
 
-  return result;
+  return result as {
+    id: number;
+    title: string;
+    body: string;
+    createdAt: Date;
+    similarity: number;
+  }[];
 }
 
 // Example of selecting posts with vector similarity
