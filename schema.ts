@@ -83,7 +83,6 @@ export async function searchPosts(
   const result = await db.select({
     id: postsTable.id,
     title: postsTable.title,
-    body: postsTable.body,
     createdAt: postsTable.createdAt,
     similarity,
   })
@@ -97,7 +96,6 @@ export async function searchPosts(
   return result as {
     id: number;
     title: string;
-    body: string;
     createdAt: Date;
     similarity: number;
   }[];
