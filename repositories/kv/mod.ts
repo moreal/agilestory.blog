@@ -5,12 +5,12 @@ export interface KeyValueStore {
   set(key: string, value: unknown): Promise<void>;
 }
 
-export class FileKeyValueStore implements KeyValueStore {
+export class FileSystemKeyValueStore implements KeyValueStore {
   private constructor(private readonly directoryPath: string) {}
 
-  static async create(directoryPath: string): Promise<FileKeyValueStore> {
+  static async create(directoryPath: string): Promise<FileSystemKeyValueStore> {
     await Deno.mkdir(directoryPath, { recursive: true });
-    return new FileKeyValueStore(directoryPath);
+    return new FileSystemKeyValueStore(directoryPath);
   }
 
   async get(key: string): Promise<{ value: unknown } | undefined> {

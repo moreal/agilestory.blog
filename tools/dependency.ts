@@ -1,5 +1,5 @@
 import { join } from "jsr:@std/path";
-import { FileKeyValueStore } from "@/repositories/kv/mod.ts";
+import { FileSystemKeyValueStore } from "@/repositories/kv/mod.ts";
 import { KVPersistentRawContentRepository } from "@/repositories/raw-content/mod.ts";
 import { KVPersistentRawPagesRepository } from "@/repositories/raw-pages/mod.ts";
 import {
@@ -16,10 +16,10 @@ import {
 export async function prepareDependencies() {
   const AGILEDATA_PATH = Deno.env.get("AGILEDATA") || "data";
   const rawPagesRepository = new KVPersistentRawPagesRepository(
-    await FileKeyValueStore.create(join(AGILEDATA_PATH, "pages")),
+    await FileSystemKeyValueStore.create(join(AGILEDATA_PATH, "pages")),
   );
   const rawContentRepository = new KVPersistentRawContentRepository(
-    await FileKeyValueStore.create(join(AGILEDATA_PATH, "contents")),
+    await FileSystemKeyValueStore.create(join(AGILEDATA_PATH, "contents")),
   );
   const rawContentProcessor = new RawContentProcessor();
   const rawPagesLoader = new RawPagesLoader(
