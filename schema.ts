@@ -9,7 +9,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { OllamaEmbeddings } from "@langchain/ollama";
 import type { Database } from "./db.ts";
-import { getLogger } from "@logtape/logtape";
 
 export const postsTable = pgTable("posts", {
   id: serial("id").primaryKey(),

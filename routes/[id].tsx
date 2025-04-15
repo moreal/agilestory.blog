@@ -3,8 +3,6 @@ import { db } from "@/db.ts";
 import { postsTable } from "@/schema.ts";
 import { and, asc, desc, eq, gt, isNotNull, lt } from "drizzle-orm";
 import { Head } from "$fresh/runtime.ts";
-import * as constants from "../constants.ts";
-import { useEffect, useState } from "preact/hooks";
 import { FloatingButton } from "../components/FloatingButton.tsx";
 import { PostNavigation } from "@/components/PostNavigation.tsx";
 
