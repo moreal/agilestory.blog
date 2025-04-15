@@ -1,4 +1,4 @@
-export { RawContentProcessor } from "./processor.ts";
+export { ContentProcessor } from "./processor.ts";
 export {
   buildArchiveUrl,
   type WaybackMachineService,

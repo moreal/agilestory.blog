@@ -1,8 +1,7 @@
 import type { Content } from "../models/content.ts";
-import type { RawContent } from "../models/raw-content.ts";
 
-export class RawContentProcessor {
-  process(rawContent: RawContent): Content {
+export class ContentProcessor {
+  process(rawContent: Content): Content {
     return {
       title: rawContent.title,
       body: rawContent.body

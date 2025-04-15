@@ -10,8 +10,8 @@ async function main() {
 
   const {
     timeMapLoader,
-    rawContentLoader,
-    rawContentProcessor,
+    contentLoader,
+    contentProcessor,
     embeddingService,
   } = await prepareDependencies();
 
@@ -28,8 +28,9 @@ async function main() {
 
     logger.info`Loaded ${timeMap.length} pages.`;
     for (const entry of timeMap) {
-      const rawContent = await rawContentLoader.load(entry);
-      const content = rawContentProcessor.process(rawContent);
+      const content = contentProcessor.process(
+        await contentLoader.load(entry),
+      );
       logger.info(
         `Loaded page {timestamp} {url} with title {title} {body}`,
         {
@@ -47,7 +48,7 @@ async function main() {
 
     const allContents = await Promise.all(
       timeMap.map((entry) =>
-        rawContentLoader.load(entry).then(rawContentProcessor.process)
+        contentLoader.load(entry).then(contentProcessor.process)
       ),
     );
 
@@ -64,8 +65,8 @@ async function main() {
 
     const allContents = await Promise.all(
       timeMap.map((entry) =>
-        rawContentLoader.load(entry).then((x) => {
-          return rawContentProcessor.process(x);
+        contentLoader.load(entry).then((x) => {
+          return contentProcessor.process(x);
         }).then(
           (x) => {
             return {

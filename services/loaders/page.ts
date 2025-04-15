@@ -1,10 +1,10 @@
 import { DOMParser } from "jsr:@b-fuze/deno-dom";
-import type { RawContent } from "../../models/raw-content.ts";
+import type { Content } from "../../models/content.ts";
 import type { WaybackMachineService } from "../wayback.ts";
-import type { RawContentRepository } from "../../repositories/raw-content/mod.ts";
+import type { ContentRepository } from "../../repositories/content/mod.ts";
 import { TimeMapEntry } from "@/models/timemap.ts";
 
-function parseHtml(html: string): RawContent | null {
+function parseHtml(html: string): Content | null {
   const doc = new DOMParser().parseFromString(html, "text/html");
   if (!doc) {
     return null;
@@ -29,15 +29,15 @@ function parseHtml(html: string): RawContent | null {
   };
 }
 
-export class RawContentLoader {
+export class ContentLoader {
   constructor(
-    private readonly rawContentRepository: RawContentRepository,
+    private readonly contentRepository: ContentRepository,
     private readonly waybackMachineService: WaybackMachineService,
   ) {}
 
-  async load(timeMapEntry: TimeMapEntry): Promise<RawContent> {
+  async load(timeMapEntry: TimeMapEntry): Promise<Content> {
     {
-      const rawContent = await this.rawContentRepository.get(timeMapEntry.url);
+      const rawContent = await this.contentRepository.get(timeMapEntry.url);
       if (rawContent) {
         return rawContent;
       }
@@ -46,7 +46,7 @@ export class RawContentLoader {
     const html = await this.waybackMachineService.getArchive(timeMapEntry);
     const rawContent = parseHtml(html);
     if (rawContent) {
-      await this.rawContentRepository.save(timeMapEntry.url, rawContent);
+      await this.contentRepository.save(timeMapEntry.url, rawContent);
       return rawContent;
     }
 
@@ -62,11 +62,11 @@ export class RawContentLoader {
 
     for (const otherArchive of otherArchives) {
       const html = await this.waybackMachineService.getArchive(otherArchive);
-      const rawContent = parseHtml(html);
-      if (rawContent) {
+      const content = parseHtml(html);
+      if (content) {
         console.log("Found title element in other archive.", otherArchive);
-        await this.rawContentRepository.save(timeMapEntry.url, rawContent);
-        return rawContent;
+        await this.contentRepository.save(timeMapEntry.url, content);
+        return content;
       }
     }
 
