@@ -1,6 +1,7 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { db } from "@/db.ts";
 import { searchPosts } from "@/schema.ts";
+import { YmdDate } from "@/components/YmdDate.tsx";
 
 interface Data {
   result: {
@@ -40,12 +41,6 @@ export const handler: Handlers<Data> = {
   },
 };
 
-function formatDate(date: Date): string {
-  return `${date.getFullYear()}-${
-    String(date.getMonth() + 1).padStart(2, "0")
-  }-${String(date.getDate()).padStart(2, "0")}`;
-}
-
 export default function (props: PageProps<Data>) {
   const result = props.data.result;
 
@@ -71,9 +66,10 @@ export default function (props: PageProps<Data>) {
             {result.posts.map(({ title, createdAt, id }) => (
               <li class="w-full list-none" key={title}>
                 <a class="flex flex-row gap-4" href={`${id}`}>
-                  <span class="font-light w-24 text-gray-400">
-                    {formatDate(createdAt!)}
-                  </span>
+                  <YmdDate
+                    date={createdAt!}
+                    class="font-light w-24 text-gray-400"
+                  />
                   <span class="border-b-2">{title}</span>
                 </a>
               </li>

@@ -2,6 +2,7 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { db } from "@/db.ts";
 import { postsTable } from "@/schema.ts";
 import { isNotNull } from "drizzle-orm";
+import { YmdDate } from "@/components/YmdDate.tsx";
 
 interface Data {
   posts: {
@@ -27,12 +28,6 @@ export const handler: Handlers<Data> = {
   },
 };
 
-function formatDate(date: Date): string {
-  return `${date.getFullYear()}-${
-    String(date.getMonth() + 1).padStart(2, "0")
-  }-${String(date.getDate()).padStart(2, "0")}`;
-}
-
 export default function ({ data: { posts } }: PageProps<Data>) {
   return (
     <div class="px-4 mx-auto">
@@ -44,9 +39,10 @@ export default function ({ data: { posts } }: PageProps<Data>) {
                 class="flex flex-row w-full gap-4"
                 href={`/${id}`}
               >
-                <span class="font-light w-24 flex-shrink-0 text-gray-400 font-md">
-                  {formatDate(createdAt!)}
-                </span>
+                <YmdDate
+                  date={createdAt!}
+                  class="font-light w-24 flex-shrink-0 text-gray-400 font-md"
+                />
                 <span class="border-b-2 text-left">
                   {title}
                 </span>
