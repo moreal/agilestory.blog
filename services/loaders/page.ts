@@ -1,8 +1,8 @@
 import { DOMParser } from "jsr:@b-fuze/deno-dom";
 import type { RawContent } from "../../models/raw-content.ts";
 import type { WaybackMachineService } from "../wayback.ts";
-import type { Page } from "../../models/page.ts";
 import type { RawContentRepository } from "../../repositories/raw-content/mod.ts";
+import { TimeMapEntry } from "@/models/timemap.ts";
 
 function parseHtml(html: string): RawContent | null {
   const doc = new DOMParser().parseFromString(html, "text/html");
@@ -35,42 +35,43 @@ export class RawContentLoader {
     private readonly waybackMachineService: WaybackMachineService,
   ) {}
 
-  async load(page: Page): Promise<RawContent> {
+  async load(timeMapEntry: TimeMapEntry): Promise<RawContent> {
     {
-      const rawContent = await this.rawContentRepository.get(page.url);
+      const rawContent = await this.rawContentRepository.get(timeMapEntry.url);
       if (rawContent) {
         return rawContent;
       }
     }
 
-    const html = await this.waybackMachineService.getArchive(page);
+    const html = await this.waybackMachineService.getArchive(timeMapEntry);
     const rawContent = parseHtml(html);
     if (rawContent) {
-      await this.rawContentRepository.save(page.url, rawContent);
+      await this.rawContentRepository.save(timeMapEntry.url, rawContent);
       return rawContent;
     }
 
     console.log("Title element not found. Retry...");
 
     const otherArchives =
-      (await this.waybackMachineService.listAvailableArchives(page.url)).filter(
-        (
-          p,
-        ) => p.timestamp !== page.timestamp,
-      ).toSorted((a, b) => Number(b.timestamp) - Number(a.timestamp));
+      (await this.waybackMachineService.listAvailableArchives(timeMapEntry.url))
+        .filter(
+          (
+            p,
+          ) => p.timestamp !== timeMapEntry.timestamp,
+        ).toSorted((a, b) => Number(b.timestamp) - Number(a.timestamp));
 
     for (const otherArchive of otherArchives) {
       const html = await this.waybackMachineService.getArchive(otherArchive);
       const rawContent = parseHtml(html);
       if (rawContent) {
         console.log("Found title element in other archive.", otherArchive);
-        await this.rawContentRepository.save(page.url, rawContent);
+        await this.rawContentRepository.save(timeMapEntry.url, rawContent);
         return rawContent;
       }
     }
 
     throw new Error(
-      `Title element not found in any archive for ${page.timestamp} ${page.url}`,
+      `Title element not found in any archive for ${timeMapEntry.timestamp} ${timeMapEntry.url}`,
     );
   }
 }

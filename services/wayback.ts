@@ -1,42 +1,45 @@
 import { getLogger } from "@logtape/logtape";
-import type { Page } from "../models/page.ts";
-import { parseRawPages, type RawPages } from "../models/raw-pages.ts";
+import {
+  parseTimeMap,
+  type TimeMap,
+  type TimeMapEntry,
+} from "../models/timemap.ts";
 
 export interface WaybackMachineService {
-  getTimemap(url: string, pattern: string): Promise<RawPages>;
-  getArchive(page: Page): Promise<string>;
-  listAvailableArchives(url: string): Promise<Page[]>;
+  getTimemap(url: string, pattern: string): Promise<TimeMap>;
+  getArchive(page: TimeMapEntry): Promise<string>;
+  listAvailableArchives(url: string): Promise<TimeMap>;
 }
 
 const logger = getLogger(["downloader", "wayback-machine-service"]);
 
 export function buildArchiveUrl(
-  { timestamp, url }: Page,
+  { timestamp, url }: TimeMapEntry,
 ): string {
   return `https://web.archive.org/web/${timestamp}/${url}`;
 }
 
 export class WaybackMachineServiceImpl implements WaybackMachineService {
   // TODO: Make this configurable
-  async getTimemap(url: string, pattern: string): Promise<RawPages> {
+  async getTimemap(url: string, pattern: string): Promise<TimeMap> {
     logger.debug(`Called getTilemap({url}, {pattern})`, { url, pattern });
 
-    const timemapUrl = `https://web.archive.org/web/timemap/json?url=${
+    const timeMapUrl = `https://web.archive.org/web/timemap/json?url=${
       encodeURIComponent(url)
     }&fl=endtimestamp,original&matchType=prefix&filter=statuscode:200&filter=original:${
       encodeURIComponent(pattern)
     }&filter=mimetype:text/html&collapse=urlkey&limit=150000`;
-    const response = await fetch(timemapUrl);
+    const response = await fetch(timeMapUrl);
     if (!response.ok) {
       throw new Error(
         `Failed to fetch timemap for ${url}: ${response.statusText}`,
       );
     }
     const data = await response.json();
-    return parseRawPages(data);
+    return parseTimeMap(data);
   }
 
-  async getArchive(page: Page): Promise<string> {
+  async getArchive(page: TimeMapEntry): Promise<string> {
     const { timestamp, url } = page;
     logger.debug(`Called getArchive({timestamp}, {url})`, { timestamp, url });
 
@@ -56,7 +59,7 @@ export class WaybackMachineServiceImpl implements WaybackMachineService {
     return decoder.decode(buffer);
   }
 
-  async listAvailableArchives(url: string): Promise<Page[]> {
+  async listAvailableArchives(url: string): Promise<TimeMap> {
     logger.debug(`Called listAvailableArchives({url})`, { url });
 
     const availableArchiveUrl =
@@ -77,9 +80,6 @@ export class WaybackMachineServiceImpl implements WaybackMachineService {
 
     const data = await response.json();
     logger.debug(`Inspect archives list: {data}`, { data });
-    return data.slice(1).map((page: any) => {
-      const [original, timestamp] = page;
-      return { timestamp, url: original };
-    });
+    return parseTimeMap(data.slice(1));
   }
 }

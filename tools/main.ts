@@ -1,4 +1,3 @@
-import { RawPagesMapper } from "@/mappers/mod.ts";
 import { getLogger } from "@logtape/logtape";
 import { configureLogging } from "./logging.ts";
 import { prepareDependencies } from "./dependency.ts";
@@ -10,7 +9,7 @@ async function main() {
   await configureLogging();
 
   const {
-    rawPagesLoader,
+    timeMapLoader,
     rawContentLoader,
     rawContentProcessor,
     embeddingService,
@@ -25,19 +24,18 @@ async function main() {
   if (Deno.args[0] === "download") {
     const logger = baseLogger.getChild("download");
 
-    const rawPages = await rawPagesLoader.load();
-    const pages = new RawPagesMapper().toPages(rawPages);
+    const timeMap = await timeMapLoader.load();
 
-    logger.info`Loaded ${pages.length} pages.`;
-    for (const page of pages) {
-      const rawContent = await rawContentLoader.load(page);
+    logger.info`Loaded ${timeMap.length} pages.`;
+    for (const entry of timeMap) {
+      const rawContent = await rawContentLoader.load(entry);
       const content = rawContentProcessor.process(rawContent);
       logger.info(
         `Loaded page {timestamp} {url} with title {title} {body}`,
         {
-          url: page.url,
+          url: entry.url,
           title: content.title,
-          timestamp: page.timestamp,
+          timestamp: entry.timestamp,
           body: content.body,
         },
       );
@@ -45,12 +43,11 @@ async function main() {
 
     logger.info`Finished loading pages.`;
   } else if (Deno.args[0] === "dump-file") {
-    const rawPages = await rawPagesLoader.load();
-    const pages = new RawPagesMapper().toPages(rawPages);
+    const timeMap = await timeMapLoader.load();
 
     const allContents = await Promise.all(
-      pages.map((page) =>
-        rawContentLoader.load(page).then(rawContentProcessor.process)
+      timeMap.map((entry) =>
+        rawContentLoader.load(entry).then(rawContentProcessor.process)
       ),
     );
 
@@ -63,18 +60,17 @@ async function main() {
       ),
     );
   } else if (Deno.args[0] === "dump-db") {
-    const rawPages = await rawPagesLoader.load();
-    const pages = new RawPagesMapper().toPages(rawPages);
+    const timeMap = await timeMapLoader.load();
 
     const allContents = await Promise.all(
-      pages.map((page) =>
-        rawContentLoader.load(page).then((x) => {
+      timeMap.map((entry) =>
+        rawContentLoader.load(entry).then((x) => {
           return rawContentProcessor.process(x);
         }).then(
           (x) => {
             return {
-              id: Number(page.url.match(/(\d+)$/)?.[0]),
-              internetArchiveUrl: buildArchiveUrl(page),
+              id: Number(entry.url.match(/(\d+)$/)?.[0]),
+              internetArchiveUrl: buildArchiveUrl(entry),
               ...x,
             };
           },
