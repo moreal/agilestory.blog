@@ -6,6 +6,7 @@ import { Head } from "$fresh/runtime.ts";
 import * as constants from "../constants.ts";
 import { useEffect, useState } from "preact/hooks";
 import { FloatingButton } from "../components/FloatingButton.tsx";
+import { PostNavigation } from "@/components/PostNavigation.tsx";
 
 interface Data {
   post: {
@@ -168,30 +169,10 @@ export default function (props: PageProps<Data>) {
         </div>
         <hr class="w-full" />
         <footer class="w-full">
-          <nav class="w-full">
-            <ul class="flex flex-col justify-between w-full gap-4">
-              {props.data.prevPost && (
-                <li class="w-full text-sm font-semibold text-left">
-                  <a
-                    href={`/${props.data.prevPost.id}`}
-                  >
-                    <p>{"<"} {constants.PREVIOUS_POST_MESSAGE}</p>
-                    <p class="text-gray-600">{props.data.prevPost.title}</p>
-                  </a>
-                </li>
-              )}
-              {props.data.nextPost && (
-                <li class="w-full text-sm font-semibold text-right">
-                  <a
-                    href={`/${props.data.nextPost.id}`}
-                  >
-                    <p>{constants.NEXT_POST_MESSAGE} {">"}</p>
-                    <p class="text-gray-600">{props.data.nextPost.title}</p>
-                  </a>
-                </li>
-              )}
-            </ul>
-          </nav>
+          <PostNavigation
+            prevPost={props.data.prevPost}
+            nextPost={props.data.nextPost}
+          />
         </footer>
         <FloatingButton />
       </div>
