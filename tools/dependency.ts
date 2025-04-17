@@ -1,5 +1,5 @@
 import { join } from "jsr:@std/path";
-import { FileSystemKeyValueStore } from "@/repositories/kv/mod.ts";
+import { FileSystemKeyValueStore } from "@/infra/storage/kv/mod.ts";
 import {
   type ContentRepository,
   KVPersistentContentRepository,

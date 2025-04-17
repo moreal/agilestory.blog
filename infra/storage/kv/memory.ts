@@ -1,4 +1,4 @@
-import type { KeyValueStore } from "@/repositories/kv/interface.ts";
+import type { KeyValueStore } from "@/infra/storage/kv/interface.ts";
 
 export class InMemoryKeyValueStore implements KeyValueStore {
   private readonly store: Map<string, unknown>;

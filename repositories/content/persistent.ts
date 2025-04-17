@@ -1,5 +1,5 @@
 import { type Content, parseContent } from "../../models/content.ts";
-import type { KeyValueStore } from "../kv/mod.ts";
+import type { KeyValueStore } from "@/infra/storage/kv/mod.ts";
 import type { ContentRepository } from "./common.ts";
 
 export class KVPersistentContentRepository implements ContentRepository {

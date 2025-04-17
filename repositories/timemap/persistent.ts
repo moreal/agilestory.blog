@@ -1,5 +1,5 @@
 import { parseTimeMap, type TimeMap } from "../../models/timemap.ts";
-import type { KeyValueStore } from "../kv/mod.ts";
+import type { KeyValueStore } from "@/infra/storage/kv/mod.ts";
 import type { TimeMapRepository } from "./common.ts";
 
 export class KVPersistentTimeMapRepository implements TimeMapRepository {
