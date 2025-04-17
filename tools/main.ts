@@ -6,11 +6,12 @@ import { postsTable } from "@/schema.ts";
 import {
   buildArchiveUrl,
   ContentProcessor,
+  ContentProvider,
   TimeMapLoader,
 } from "@/services/mod.ts";
 import { TimeMap } from "@/models/mod.ts";
-import { ContentLoader } from "@/services/loaders/page.ts";
 import { EmbeddingService } from "@/services/embedding/mod.ts";
+import { TimeMapProvider } from "@/services/loaders/timemap.ts";
 
 // Interface for command handlers
 export interface CommandHandler {
@@ -22,19 +23,19 @@ export class DownloadCommandHandler implements CommandHandler {
   private logger = getLogger(["downloader", "main", "download"]);
 
   constructor(
-    private timeMapLoader: TimeMapLoader,
-    private contentLoader: ContentLoader,
+    private timeMapProvider: TimeMapProvider,
+    private contentProvider: ContentProvider,
     private contentProcessor: ContentProcessor,
   ) {}
 
   async execute(_args: string[]): Promise<void> {
-    const timeMap = await this.timeMapLoader.load();
+    const timeMap = await this.timeMapProvider.load();
 
     this.logger.info`Loaded ${timeMap.length} pages.`;
     for (const entry of timeMap) {
       try {
         const content = this.contentProcessor.process(
-          await this.contentLoader.load(entry),
+          await this.contentProvider.load(entry),
         );
         this.logger.info(
           `Loaded page {timestamp} {url} with title {title} {body}`,
@@ -60,8 +61,8 @@ export class DumpFileCommandHandler implements CommandHandler {
   private logger = getLogger(["downloader", "main", "dump-file"]);
 
   constructor(
-    private timeMapLoader: TimeMapLoader,
-    private contentLoader: ContentLoader,
+    private timeMapProvider: TimeMapProvider,
+    private contentProvider: ContentProvider,
     private contentProcessor: ContentProcessor,
   ) {}
 
@@ -72,13 +73,13 @@ export class DumpFileCommandHandler implements CommandHandler {
     }
 
     const outputPath = args[0];
-    const timeMap = await this.timeMapLoader.load();
+    const timeMap = await this.timeMapProvider.load();
     this.logger.info`Loaded ${timeMap.length} pages for dump.`;
 
     try {
       const allContents = await Promise.all(
         timeMap.map((entry) =>
-          this.contentLoader.load(entry)
+          this.contentProvider.load(entry)
             .then((content) => this.contentProcessor.process(content))
             .catch((error) => {
               this.logger
@@ -115,14 +116,14 @@ export class DumpDatabaseCommandHandler implements CommandHandler {
   private batchSize = 50; // Process in batches for better performance
 
   constructor(
-    private timeMapLoader: TimeMapLoader,
-    private contentLoader: ContentLoader,
+    private timeMapProvider: TimeMapProvider,
+    private contentProvider: ContentProvider,
     private contentProcessor: ContentProcessor,
     private embeddingService: EmbeddingService,
   ) {}
 
   async execute(_args: string[]): Promise<void> {
-    const timeMap = await this.timeMapLoader.load();
+    const timeMap = await this.timeMapProvider.load();
     this.logger.info`Loaded ${timeMap.length} pages for database import.`;
 
     // Process content and prepare for database in batches
@@ -153,7 +154,7 @@ export class DumpDatabaseCommandHandler implements CommandHandler {
 
     const processedContents = await Promise.all(
       entries.map((entry) =>
-        this.contentLoader.load(entry)
+        this.contentProvider.load(entry)
           .then((content) => this.contentProcessor.process(content))
           .then((processed) => ({
             id: Number(entry.url.match(/(\d+)$/)?.[0]),
@@ -216,20 +217,20 @@ export class CommandFactory {
     switch (command) {
       case "download":
         return new DownloadCommandHandler(
-          dependencies.timeMapLoader,
-          dependencies.contentLoader,
+          dependencies.timeMapProvider,
+          dependencies.contentProvider,
           dependencies.contentProcessor,
         );
       case "dump-file":
         return new DumpFileCommandHandler(
-          dependencies.timeMapLoader,
-          dependencies.contentLoader,
+          dependencies.timeMapProvider,
+          dependencies.contentProvider,
           dependencies.contentProcessor,
         );
       case "dump-db":
         return new DumpDatabaseCommandHandler(
-          dependencies.timeMapLoader,
-          dependencies.contentLoader,
+          dependencies.timeMapProvider,
+          dependencies.contentProvider,
           dependencies.contentProcessor,
           dependencies.embeddingService,
         );

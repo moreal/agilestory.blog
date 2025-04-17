@@ -13,7 +13,6 @@ import {
   FallbackContentLoader,
   PersistingContentProvider,
   RepositoryContentWriter,
-  TimeMapLoader,
   type WaybackMachineService,
   WaybackMachineServiceImpl,
 } from "@/services/mod.ts";
@@ -22,7 +21,7 @@ import {
   OllamaEmbeddingService,
 } from "@/services/embedding/mod.ts";
 import {
-  ContentLoader,
+  ContentProvider,
   RepositoryContentLoader,
   WaybackContentProvider,
   WaybackFallbackContentProvider,
@@ -32,6 +31,7 @@ import {
   PersistingTimeMapProvider,
   RepositoryTimeMapLoader,
   RepositoryTimeMapWriter,
+  TimeMapProvider,
   WaybackTimeMapProvider,
 } from "@/services/loaders/timemap.ts";
 
@@ -96,8 +96,8 @@ export function loadConfig(): AppConfig {
 }
 
 export type Dependencies = {
-  timeMapLoader: TimeMapLoader;
-  contentLoader: ContentLoader;
+  timeMapProvider: TimeMapProvider;
+  contentProvider: ContentProvider;
   contentProcessor: ContentProcessor;
   embeddingService: EmbeddingService;
 };
@@ -116,8 +116,8 @@ export async function prepareDependencies(
   const contentProcessor = factory.createContentProcessor();
   const embeddingService = factory.createEmbeddingService();
 
-  // Create the loaders using the repositories and services
-  const timeMapLoader = new FallbackTimeMapLoader(
+  // Create the providers using the repositories and services
+  const timeMapProvider: TimeMapProvider = new FallbackTimeMapLoader(
     [
       new RepositoryTimeMapLoader(timeMapRepository),
       new PersistingTimeMapProvider(
@@ -133,7 +133,7 @@ export async function prepareDependencies(
     ],
   );
 
-  const contentLoader = new FallbackContentLoader(
+  const contentProvider: ContentProvider = new FallbackContentLoader(
     [
       new RepositoryContentLoader(contentRepository),
       new PersistingContentProvider(
@@ -151,8 +151,8 @@ export async function prepareDependencies(
   );
 
   return {
-    timeMapLoader,
-    contentLoader,
+    timeMapProvider,
+    contentProvider,
     contentProcessor,
     embeddingService,
   };
