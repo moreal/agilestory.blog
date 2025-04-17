@@ -19,6 +19,13 @@ import {
   OllamaEmbeddingService,
 } from "@/services/embedding/mod.ts";
 import { ContentLoader } from "@/services/loaders/page.ts";
+import {
+  FallbackTimeMapLoader,
+  PersistingTimeMapProvider,
+  RepositoryTimeMapLoader,
+  RepositoryTimeMapWriter,
+  WaybackTimeMapProvider,
+} from "@/services/loaders/timemap.ts";
 
 // Configuration interface to allow for environment overrides
 export interface AppConfig {
@@ -102,9 +109,20 @@ export async function prepareDependencies(
   const embeddingService = factory.createEmbeddingService();
 
   // Create the loaders using the repositories and services
-  const timeMapLoader = new TimeMapLoader(
-    timeMapRepository,
-    waybackService,
+  const timeMapLoader = new FallbackTimeMapLoader(
+    [
+      new RepositoryTimeMapLoader(timeMapRepository),
+      new PersistingTimeMapProvider(
+        new WaybackTimeMapProvider(
+          waybackService,
+          {
+            url: "agile.egloos.com/",
+            pattern: "^https://agile.egloos.com/[0-9]+$",
+          },
+        ),
+        new RepositoryTimeMapWriter(timeMapRepository),
+      ),
+    ],
   );
 
   const contentLoader = new ContentLoader(
