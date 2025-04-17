@@ -1,4 +1,14 @@
-export { ContentLoader as RawContentLoader } from "./page.ts";
+export {
+  type ContentLoader,
+  type ContentProvider,
+  type ContentWriter,
+  FallbackContentLoader,
+  PersistingContentProvider,
+  RepositoryContentLoader,
+  RepositoryContentWriter,
+  WaybackContentProvider,
+  WaybackFallbackContentProvider,
+} from "./page.ts";
 export {
   FallbackTimeMapLoader,
   PersistingTimeMapProvider,

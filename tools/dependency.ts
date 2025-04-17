@@ -10,6 +10,9 @@ import {
 } from "@/repositories/timemap/mod.ts";
 import {
   ContentProcessor,
+  FallbackContentLoader,
+  PersistingContentProvider,
+  RepositoryContentWriter,
   TimeMapLoader,
   type WaybackMachineService,
   WaybackMachineServiceImpl,
@@ -18,7 +21,12 @@ import {
   EmbeddingService,
   OllamaEmbeddingService,
 } from "@/services/embedding/mod.ts";
-import { ContentLoader } from "@/services/loaders/page.ts";
+import {
+  ContentLoader,
+  RepositoryContentLoader,
+  WaybackContentProvider,
+  WaybackFallbackContentProvider,
+} from "@/services/loaders/page.ts";
 import {
   FallbackTimeMapLoader,
   PersistingTimeMapProvider,
@@ -125,9 +133,21 @@ export async function prepareDependencies(
     ],
   );
 
-  const contentLoader = new ContentLoader(
-    contentRepository,
-    waybackService,
+  const contentLoader = new FallbackContentLoader(
+    [
+      new RepositoryContentLoader(contentRepository),
+      new PersistingContentProvider(
+        new FallbackContentLoader(
+          [
+            new WaybackContentProvider(waybackService),
+            new WaybackFallbackContentProvider(
+              waybackService,
+            ),
+          ],
+        ),
+        new RepositoryContentWriter(contentRepository),
+      ),
+    ],
   );
 
   return {
