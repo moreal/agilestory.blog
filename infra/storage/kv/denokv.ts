@@ -18,7 +18,11 @@ export class DenoKvKeyValueStore implements KeyValueStore {
     return { value: result.value };
   }
 
-  async set(key: string, value: NonNullable<unknown>): Promise<void> {
-    await this.kv.set([key], { value });
+  async set(
+    key: string,
+    value: NonNullable<unknown>,
+    options?: { expireIn?: number },
+  ): Promise<void> {
+    await this.kv.set([key], { value }, options);
   }
 }

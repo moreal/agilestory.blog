@@ -5,6 +5,7 @@ import { and, asc, desc, eq, gt, isNotNull, lt } from "drizzle-orm";
 import { Head } from "$fresh/runtime.ts";
 import { FloatingButton } from "../components/FloatingButton.tsx";
 import { PostNavigation } from "@/components/PostNavigation.tsx";
+import { DenoKvKeyValueStore } from "@/infra/storage/kv/mod.ts";
 
 interface Data {
   post: {
@@ -29,6 +30,13 @@ export const handler: Handlers<Data> = {
   async GET(_, ctx) {
     const { id: rawId } = ctx.params;
     const id = Number(rawId || "0");
+
+    const kv = await DenoKvKeyValueStore.create("data/posts");
+    const cacheKey = `post:${id}`;
+    const cached = await kv.get(cacheKey);
+    if (cached) {
+      return ctx.render(cached.value as Data);
+    }
 
     // Fetch current post
     const currentPostResult = await db
@@ -87,11 +95,15 @@ export const handler: Handlers<Data> = {
       return ctx.renderNotFound();
     }
 
-    return ctx.render({
+    const returnValue = {
       post: result[0],
       prevPost,
       nextPost,
+    } as const;
+    await kv.set(cacheKey, returnValue, {
+      expireIn: 60 * 60 * 24, // 1 day
     });
+    return ctx.render(returnValue);
   },
 };
 

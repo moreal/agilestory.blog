@@ -3,6 +3,7 @@ import { db } from "@/db.ts";
 import { postsTable } from "@/schema.ts";
 import { isNotNull } from "drizzle-orm";
 import { YmdDate } from "@/components/YmdDate.tsx";
+import { DenoKvKeyValueStore } from "@/infra/storage/kv/mod.ts";
 
 interface Data {
   posts: {
@@ -14,6 +15,15 @@ interface Data {
 
 export const handler: Handlers<Data> = {
   async GET(_, ctx) {
+    const kv = await DenoKvKeyValueStore.create("data/posts");
+    const cacheKey = "posts";
+    const cached = await kv.get(cacheKey);
+    if (cached) {
+      return ctx.render({
+        posts: cached.value as Data["posts"],
+      });
+    }
+
     const posts = await db.select({
       id: postsTable.id,
       title: postsTable.title,
@@ -22,6 +32,7 @@ export const handler: Handlers<Data> = {
       postsTable.createdAt,
     );
 
+    await kv.set(cacheKey, posts);
     return ctx.render({
       posts: posts as Data["posts"],
     });
