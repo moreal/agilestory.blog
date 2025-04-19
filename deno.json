@@ -1,8 +1,8 @@
 {
   "tasks": {
-    "tool:download": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents main.ts download",
-    "tool:dump-file": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents main.ts dump-file",
-    "tool:dump-db": "deno run --allow-read=.env --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents main.ts dump-db",
+    "tool:download": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents tools/main.ts download",
+    "tool:dump-file": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents tools/main.ts dump-file",
+    "tool:dump-db": "deno run --allow-read=.env --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents tools/main.ts dump-db",
 
     "db:drizzle-kit": "deno run -A npm:drizzle-kit@^0.30.6",
     "db:migrate": "deno run -A npm:drizzle-kit@^0.30.6 migrate",
