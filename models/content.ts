@@ -14,4 +14,6 @@ export const parseContent = (data: unknown): Content => {
   return result.data;
 };
 
+export const safeParseContent = ContentSchema.safeParse;
+
 export type Content = zod.infer<typeof ContentSchema>;

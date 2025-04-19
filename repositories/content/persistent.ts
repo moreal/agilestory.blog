@@ -1,4 +1,4 @@
-import { type Content, parseContent } from "../../models/content.ts";
+import { type Content, safeParseContent } from "../../models/content.ts";
 import type { KeyValueStore } from "@/infra/storage/kv/mod.ts";
 import type { ContentRepository } from "./common.ts";
 
@@ -11,7 +11,12 @@ export class KVPersistentContentRepository implements ContentRepository {
         return undefined;
       }
 
-      return parseContent(result.value);
+      const parsed = safeParseContent(result.value);
+      if (parsed.success) {
+        return parsed.data;
+      }
+
+      return undefined;
     });
   }
 
