@@ -12,7 +12,6 @@ export class FileSystemKeyValueStore implements KeyValueStore {
   async get(key: string): Promise<{ value: unknown } | undefined> {
     try {
       const filePath = this.#buildFilePath(key);
-      console.debug(key, filePath);
       const fileContent = await Deno.readTextFile(filePath);
       return JSON.parse(fileContent);
     } catch (error) {
