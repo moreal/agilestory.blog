@@ -101,7 +101,7 @@ export const handler: Handlers<Data> = {
       nextPost,
     } as const;
     await kv.set(cacheKey, returnValue, {
-      expireIn: 60 * 60 * 24, // 1 day
+      expireIn: 1000 * 60 * 60 * 24, // 1 day
     });
     return ctx.render(returnValue);
   },
