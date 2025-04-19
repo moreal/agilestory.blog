@@ -3,8 +3,8 @@ import { KeyValueStore } from "@/infra/storage/kv/mod.ts";
 export class DenoKvKeyValueStore implements KeyValueStore {
   private constructor(private readonly kv: Deno.Kv) {}
 
-  static async create(): Promise<DenoKvKeyValueStore> {
-    const kv = await Deno.openKv();
+  static async create(path?: string): Promise<DenoKvKeyValueStore> {
+    const kv = await Deno.openKv(path);
     return new DenoKvKeyValueStore(kv);
   }
 
@@ -24,5 +24,9 @@ export class DenoKvKeyValueStore implements KeyValueStore {
     options?: { expireIn?: number },
   ): Promise<void> {
     await this.kv.set([key], value, options);
+  }
+
+  close(): void {
+    this.kv.close();
   }
 }
