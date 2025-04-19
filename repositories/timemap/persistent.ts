@@ -11,7 +11,7 @@ export class KVPersistentTimeMapRepository implements TimeMapRepository {
         return undefined;
       }
 
-      return parseTimeMap(timeMap);
+      return parseTimeMap(timeMap.value);
     });
   }
 
