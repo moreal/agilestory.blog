@@ -32,7 +32,9 @@ export const handler: Handlers<Data> = {
       postsTable.createdAt,
     );
 
-    await kv.set(cacheKey, posts);
+    await kv.set(cacheKey, posts, {
+      expireIn: 60 * 60 * 24, // 1 day
+    });
     return ctx.render({
       posts: posts as Data["posts"],
     });
