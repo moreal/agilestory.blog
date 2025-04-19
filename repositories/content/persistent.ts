@@ -1,6 +1,6 @@
 import { type Content, safeParseContent } from "../../models/content.ts";
 import type { KeyValueStore } from "@/infra/storage/kv/mod.ts";
-import type { ContentRepository } from "./common.ts";
+import type { ContentRepository } from "./interface.ts";
 
 export class KVPersistentContentRepository implements ContentRepository {
   constructor(private readonly keyValueStore: KeyValueStore) {}
