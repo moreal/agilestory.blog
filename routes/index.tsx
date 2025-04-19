@@ -15,7 +15,7 @@ interface Data {
 
 export const handler: Handlers<Data> = {
   async GET(_, ctx) {
-    const kv = await DenoKvKeyValueStore.create("data/posts");
+    const kv = await DenoKvKeyValueStore.create();
     const cacheKey = "posts";
     const cached = await kv.get(cacheKey);
     if (cached) {

@@ -31,7 +31,7 @@ export const handler: Handlers<Data> = {
     const { id: rawId } = ctx.params;
     const id = Number(rawId || "0");
 
-    const kv = await DenoKvKeyValueStore.create("data/posts");
+    const kv = await DenoKvKeyValueStore.create();
     const cacheKey = `post:${id}`;
     const cached = await kv.get(cacheKey);
     if (cached) {
