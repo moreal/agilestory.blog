@@ -39,8 +39,12 @@
     "@/": "./"
   },
   "nodeModulesDir": "auto",
-  "unstable": ["temporal"],
+  "unstable": ["temporal", "kv"],
   "compilerOptions": {
+    "lib": [
+      "deno.ns",
+      "deno.unstable"
+    ],
     "jsx": "react-jsx",
     "jsxImportSource": "preact"
   },
