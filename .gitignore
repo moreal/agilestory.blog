@@ -176,3 +176,6 @@ dist
 _fresh/
 # npm dependencies
 node_modules/
+
+# Deno KV
+data/
