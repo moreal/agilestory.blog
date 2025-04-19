@@ -14,7 +14,8 @@ for this project.
 - **Error Handling**: Always include appropriate error handling in generated
   code.
 - **Testing**: When generating functions, consider including or suggesting test
-  cases. Do not use `spy` when writing test code.
+  cases. Use '한국어' for naming specifications in tests. Do not use `spy` when
+  writing test code.
 
 ## TypeScript & Deno Guidelines
 
