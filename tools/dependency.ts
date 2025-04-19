@@ -125,7 +125,7 @@ export async function prepareDependencies(
           waybackService,
           {
             url: "agile.egloos.com/",
-            pattern: "^https://agile.egloos.com/[0-9]+$",
+            pattern: "^http://agile.egloos.com/[0-9]+$",
           },
         ),
         new RepositoryTimeMapWriter(timeMapRepository),
