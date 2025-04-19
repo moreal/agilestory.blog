@@ -23,6 +23,6 @@ export class DenoKvKeyValueStore implements KeyValueStore {
     value: NonNullable<unknown>,
     options?: { expireIn?: number },
   ): Promise<void> {
-    await this.kv.set([key], { value }, options);
+    await this.kv.set([key], value, options);
   }
 }
