@@ -3,6 +3,7 @@ import { KVPersistentTimeMapRepository } from "./persistent.ts";
 import { InMemoryKeyValueStore } from "../../infra/storage/kv/memory.ts";
 import type { TimeMap } from "../../models/timemap.ts";
 import type { KeyValueStore } from "@/infra/storage/kv/mod.ts";
+import { timestamp } from "drizzle-orm/gel-core";
 
 Deno.test("KVPersistentTimeMapRepository", async (t) => {
   let kvStore: KeyValueStore;
@@ -38,6 +39,24 @@ Deno.test("KVPersistentTimeMapRepository", async (t) => {
       const retrievedTimeMap = await repository.get();
 
       assertEquals(retrievedTimeMap, undefined);
+    },
+  );
+
+  await t.step(
+    "get()은 저장된 데이터가 유효한 TimeMap 형식이 아니면 undefined를 반환해야 합니다",
+    async () => {
+      setup();
+      await kvStore.set("index", "invalid data");
+      assertEquals(await repository.get(), undefined);
+
+      await kvStore.set("index", { invalid: "data" });
+      assertEquals(await repository.get(), undefined);
+
+      await kvStore.set("index", [{ timestamp: "20230101000000" }]);
+      assertEquals(await repository.get(), undefined);
+
+      await kvStore.set("index", [{ url: "https://example.com" }]);
+      assertEquals(await repository.get(), undefined);
     },
   );
 

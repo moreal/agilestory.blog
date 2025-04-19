@@ -16,6 +16,8 @@ export const parseTimeMap = (data: unknown): TimeMap => {
   return result.data;
 };
 
+export const safeParseTimeMap = TimeMapSchema.safeParse;
+
 export type OriginalLink = zod.infer<typeof OriginalLinkSchema>;
 export type TimeMapEntry = zod.infer<typeof TimeMapEntrySchema>;
 export type TimeMap = zod.infer<typeof TimeMapSchema>;

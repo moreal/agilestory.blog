@@ -1,4 +1,4 @@
-import { parseTimeMap, type TimeMap } from "../../models/timemap.ts";
+import { safeParseTimeMap, type TimeMap } from "../../models/timemap.ts";
 import type { KeyValueStore } from "@/infra/storage/kv/mod.ts";
 import type { TimeMapRepository } from "./common.ts";
 
@@ -11,7 +11,12 @@ export class KVPersistentTimeMapRepository implements TimeMapRepository {
         return undefined;
       }
 
-      return parseTimeMap(timeMap.value);
+      const parsed = safeParseTimeMap(timeMap.value);
+      if (parsed.success) {
+        return parsed.data;
+      }
+
+      return undefined;
     });
   }
 
