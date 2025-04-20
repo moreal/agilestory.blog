@@ -1,5 +1,6 @@
 import { getLogger } from "@logtape/logtape";
 import {
+  parseRawTimeMap,
   parseTimeMap,
   type TimeMap,
   type TimeMapEntry,
@@ -63,7 +64,11 @@ export class WaybackMachineServiceImpl implements WaybackMachineService {
 
     try {
       const data = await response.json();
-      return parseTimeMap(data);
+      const rawTimeMap = parseRawTimeMap((data as unknown[]).slice(1));
+      return rawTimeMap.map(([timestamp, url]) => ({
+        timestamp,
+        url,
+      }));
     } catch (error) {
       if (!(error instanceof Error)) {
         throw new Error("Unexpected error");
