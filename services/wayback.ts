@@ -116,7 +116,10 @@ export class WaybackMachineServiceImpl implements WaybackMachineService {
     try {
       const data = await response.json();
       this.logger.debug(`Inspect archives list: {data}`, { data });
-      return parseTimeMap(data.slice(1));
+      return parseRawTimeMap(data.slice(1)).map(([timestamp, url]) => ({
+        timestamp,
+        url,
+      }));
     } catch (error) {
       this.#mustError(error);
 
