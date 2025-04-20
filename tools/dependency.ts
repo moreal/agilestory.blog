@@ -23,8 +23,8 @@ import {
 import {
   ContentProvider,
   RepositoryContentLoader,
-  WaybackContentProvider,
-  WaybackFallbackContentProvider,
+  WaybackContentLoader,
+  WaybackFallbackContentLoader,
 } from "@/services/loaders/page.ts";
 import {
   FallbackTimeMapLoader,
@@ -139,8 +139,8 @@ export async function prepareDependencies(
       new PersistingContentProvider(
         new FallbackContentLoader(
           [
-            new WaybackContentProvider(waybackService),
-            new WaybackFallbackContentProvider(
+            new WaybackContentLoader(waybackService),
+            new WaybackFallbackContentLoader(
               waybackService,
             ),
           ],

@@ -64,27 +64,27 @@ export class RepositoryContentWriter implements ContentWriter {
   }
 }
 
-export class WaybackContentProvider implements ContentProvider {
+export class WaybackContentLoader implements ContentLoader {
   constructor(private readonly waybackMachineService: WaybackMachineService) {}
 
-  async load(timeMapEntry: TimeMapEntry): Promise<Content> {
+  async load(timeMapEntry: TimeMapEntry): Promise<Content | undefined> {
     const content = await fetchArchiveAndParse(
       this.waybackMachineService,
       timeMapEntry,
     );
     if (!content) {
-      throw new Error(`Failed to parse content for ${timeMapEntry.url}`);
+      return undefined;
     }
     return content;
   }
 }
 
-export class WaybackFallbackContentProvider implements ContentProvider {
+export class WaybackFallbackContentLoader implements ContentLoader {
   constructor(
     private readonly waybackMachineService: WaybackMachineService,
   ) {}
 
-  async load(timeMapEntry: TimeMapEntry): Promise<Content> {
+  async load(timeMapEntry: TimeMapEntry): Promise<Content | undefined> {
     console.log("Title element not found. Retry...");
 
     const otherArchives =
@@ -103,9 +103,7 @@ export class WaybackFallbackContentProvider implements ContentProvider {
       }
     }
 
-    throw new Error(
-      `Title element not found in any archive for ${timeMapEntry.timestamp} ${timeMapEntry.url}`,
-    );
+    return undefined;
   }
 }
 

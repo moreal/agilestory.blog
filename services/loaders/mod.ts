@@ -6,8 +6,8 @@ export {
   PersistingContentProvider,
   RepositoryContentLoader,
   RepositoryContentWriter,
-  WaybackContentProvider,
-  WaybackFallbackContentProvider,
+  WaybackContentLoader,
+  WaybackFallbackContentLoader,
 } from "./page.ts";
 export {
   FallbackTimeMapLoader,
