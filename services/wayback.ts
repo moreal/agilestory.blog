@@ -139,7 +139,7 @@ export class WaybackMachineServiceImpl implements WaybackMachineService {
   }
 
   private buildAvailableArchivesUrl(url: string): string {
-    return `https://web.archive.org/cdx/search/cdx?url=${url}&output=json&fl=original,timestamp&filter=mimetype:text/html&filter=statuscode:200`;
+    return `https://web.archive.org/cdx/search/cdx?url=${url}&output=json&fl=timestamp,original&filter=mimetype:text/html&filter=statuscode:200`;
   }
 
   private async fetchWithRetry(url: string): Promise<Response> {
