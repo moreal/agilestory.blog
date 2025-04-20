@@ -50,6 +50,8 @@ export class DownloadCommandHandler implements CommandHandler {
       } catch (error) {
         this.logger
           .error`Failed to load page ${entry.url} at ${entry.timestamp}: ${error}`;
+
+        throw error;
       }
     }));
 
