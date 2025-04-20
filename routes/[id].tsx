@@ -3,7 +3,7 @@ import { db } from "@/db.ts";
 import { postsTable } from "@/schema.ts";
 import { and, asc, desc, eq, gt, isNotNull, lt } from "drizzle-orm";
 import { Head } from "$fresh/runtime.ts";
-import { FloatingButton } from "../components/FloatingButton.tsx";
+import { FloatingButton } from "@/islands/FloatingButton.tsx";
 import { PostNavigation } from "@/components/PostNavigation.tsx";
 import { DenoKvKeyValueStore } from "@/infra/storage/kv/mod.ts";
 
