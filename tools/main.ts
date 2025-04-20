@@ -32,7 +32,8 @@ export class DownloadCommandHandler implements CommandHandler {
     const timeMap = await this.timeMapProvider.load();
 
     this.logger.info`Loaded ${timeMap.length} pages.`;
-    for (const entry of timeMap) {
+
+    await Promise.all(timeMap.map(async (entry) => {
       try {
         const content = this.contentProcessor.process(
           await this.contentProvider.load(entry),
@@ -50,7 +51,7 @@ export class DownloadCommandHandler implements CommandHandler {
         this.logger
           .error`Failed to load page ${entry.url} at ${entry.timestamp}: ${error}`;
       }
-    }
+    }));
 
     this.logger.info`Finished loading pages.`;
   }
