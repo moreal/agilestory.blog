@@ -1,16 +1,36 @@
 import * as constants from "../constants.ts";
 
+interface Post {
+  title: string;
+  id: number;
+}
+
 interface PostNavigationProps {
-  prevPost: {
-    title: string;
-    createdAt: Date;
-    id: number;
-  } | null;
-  nextPost: {
-    title: string;
-    createdAt: Date;
-    id: number;
-  } | null;
+  prevPost: Post | null;
+  nextPost: Post | null;
+}
+
+function NavigationItem(
+  { id, title, navigationMessage, textOrder }: Post & {
+    navigationMessage: string;
+    textOrder: "left" | "right";
+  },
+) {
+  return (
+    <li class={`w-1/2 text-sm font-semibold text-${textOrder}`}>
+      <a
+        href={`/${id}`}
+        class="inline-block p-2 rounded hover:bg-gray-100 w-full"
+      >
+        <p>{navigationMessage}</p>
+        <p class="text-gray-600 break-words">{title}</p>
+      </a>
+    </li>
+  );
+}
+
+function NavigationSpacer() {
+  return <li class="w-1/2"></li>;
 }
 
 export function PostNavigation({ prevPost, nextPost }: PostNavigationProps) {
@@ -18,29 +38,21 @@ export function PostNavigation({ prevPost, nextPost }: PostNavigationProps) {
     <nav class="w-full">
       <ul class="flex flex-row justify-between w-full gap-4">
         {prevPost && (
-          <li class="w-1/2 text-sm font-semibold text-left">
-            <a
-              href={`/${prevPost.id}`}
-              class="inline-block p-2 rounded hover:bg-gray-100 w-full"
-            >
-              <p>{"<"} {constants.PREVIOUS_POST_MESSAGE}</p>
-              <p class="text-gray-600 break-words">{prevPost.title}</p>
-            </a>
-          </li>
+          <NavigationItem
+            {...prevPost}
+            navigationMessage={`< ${constants.PREVIOUS_POST_MESSAGE}`}
+            textOrder="left"
+          />
         )}
-        {!prevPost && nextPost && <li class="w-1/2"></li>}
+        {!prevPost && nextPost && <NavigationSpacer />}
         {nextPost && (
-          <li class="w-1/2 text-sm font-semibold text-right">
-            <a
-              href={`/${nextPost.id}`}
-              class="inline-block p-2 rounded hover:bg-gray-100 w-full"
-            >
-              <p>{constants.NEXT_POST_MESSAGE} {">"}</p>
-              <p class="text-gray-600 break-words">{nextPost.title}</p>
-            </a>
-          </li>
+          <NavigationItem
+            {...nextPost}
+            navigationMessage={`> ${constants.NEXT_POST_MESSAGE}`}
+            textOrder="right"
+          />
         )}
-        {prevPost && !nextPost && <li class="w-1/2"></li>}
+        {prevPost && !nextPost && <NavigationSpacer />}
       </ul>
     </nav>
   );
