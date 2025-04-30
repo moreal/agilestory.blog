@@ -11,7 +11,8 @@ interface PostNavigationProps {
 }
 
 function NavigationItem(
-  { id, title, navigationMessage, textOrder }: Post & {
+  { post: { id, title }, navigationMessage, textOrder }: {
+    post: Post;
     navigationMessage: string;
     textOrder: "left" | "right";
   },
@@ -33,26 +34,40 @@ function NavigationSpacer() {
   return <li class="w-1/2"></li>;
 }
 
+function NavigationItemOrSpacer(
+  { post, navigationMessage, textOrder }: {
+    post: Post | null;
+    navigationMessage: string;
+    textOrder: "left" | "right";
+  },
+) {
+  if (!post) {
+    return <NavigationSpacer />;
+  }
+
+  return (
+    <NavigationItem
+      post={post}
+      navigationMessage={navigationMessage}
+      textOrder={textOrder}
+    />
+  );
+}
+
 export function PostNavigation({ prevPost, nextPost }: PostNavigationProps) {
   return (
     <nav class="w-full">
       <ul class="flex flex-row justify-between w-full gap-4">
-        {prevPost && (
-          <NavigationItem
-            {...prevPost}
-            navigationMessage={`< ${constants.PREVIOUS_POST_MESSAGE}`}
-            textOrder="left"
-          />
-        )}
-        {!prevPost && nextPost && <NavigationSpacer />}
-        {nextPost && (
-          <NavigationItem
-            {...nextPost}
-            navigationMessage={`> ${constants.NEXT_POST_MESSAGE}`}
-            textOrder="right"
-          />
-        )}
-        {prevPost && !nextPost && <NavigationSpacer />}
+        <NavigationItemOrSpacer
+          post={prevPost}
+          navigationMessage={`< ${constants.PREVIOUS_POST_MESSAGE}`}
+          textOrder="left"
+        />
+        <NavigationItemOrSpacer
+          post={nextPost}
+          navigationMessage={`> ${constants.NEXT_POST_MESSAGE}`}
+          textOrder="right"
+        />
       </ul>
     </nav>
   );
