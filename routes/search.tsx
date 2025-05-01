@@ -1,8 +1,14 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import { db } from "@/db.ts";
-import { searchPosts } from "@/schema.ts";
 import { YmdDate } from "@/components/YmdDate.tsx";
-import { embeddingService } from "@/singleton.ts";
+
+import { Index } from "flexsearch";
+import data from "@/data.json" with { type: "json" };
+
+interface Post {
+  id: number;
+  title: string;
+  createdAt: Date;
+}
 
 interface Data {
   result: {
@@ -10,13 +16,19 @@ interface Data {
   } | {
     status: "ok";
     keyword: string;
-    posts: {
-      id: number;
-      title: string;
-      createdAt: Date;
-      similarity: number;
-    }[];
+    posts: Post[];
   };
+}
+
+const index = new Index({
+  preset: "memory",
+  tokenize: "full",
+  resolution: 5,
+  encoder: "Exact",
+});
+
+for (const { id, title, body } of data) {
+  index.add(id, title + "\n\n" + body);
 }
 
 export const handler: Handlers<Data> = {
@@ -30,13 +42,37 @@ export const handler: Handlers<Data> = {
       });
     }
 
-    const result = await searchPosts(embeddingService, db, q, 10);
+    const result = await index.search(q, { limit: 10 });
+    if (!Array.isArray(result)) {
+      return ctx.render({
+        result: {
+          status: "ok",
+          keyword: q,
+          posts: [],
+        },
+      });
+    }
 
     return ctx.render({
       result: {
         status: "ok",
         keyword: q,
-        posts: result,
+        posts: result.map((id) => {
+          const post = data.find((post) => post.id === id);
+          if (!post) {
+            throw new Error("Post not found");
+          }
+
+          if (!post.createdAt) {
+            return null;
+          }
+
+          return {
+            id: post.id,
+            title: post.title,
+            createdAt: new Date(post.createdAt),
+          };
+        }).filter((post) => post !== null) as Post[],
       },
     });
   },

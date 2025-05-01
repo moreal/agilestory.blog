@@ -28,6 +28,7 @@
     "npm:cssnano@6.0.3": "6.0.3_postcss@8.4.35",
     "npm:drizzle-kit@~0.30.6": "0.30.6_esbuild@0.19.12",
     "npm:drizzle-orm@0.41": "0.41.0_postgres@3.4.5_@neondatabase+serverless@1.0.0_@types+pg@8.11.11",
+    "npm:flexsearch@~0.8.158": "0.8.158",
     "npm:postcss@8.4.35": "8.4.35",
     "npm:postgres@^3.4.5": "3.4.5",
     "npm:tailwindcss@3.4.1": "3.4.1_postcss@8.5.3",
@@ -858,6 +859,9 @@
       "dependencies": [
         "to-regex-range"
       ]
+    },
+    "flexsearch@0.8.158": {
+      "integrity": "sha512-UBOzX2rxIrhAeSSCesTI0qB2Q+75n66rofJx5ppZm5tjXV2P6BxOS3VHKsoSdJhIPg9IMzQl3qkVeSFyq3BUdw=="
     },
     "foreground-child@3.3.1": {
       "integrity": "sha512-gIXjKqtFuWEgzFRJA9WCQeSJLZDjgJUOMCMzxtvFq/37KojM1BFGufqsCy0r4qSQmYLsZYMeyRqzIWOMup03sw==",
@@ -2168,6 +2172,7 @@
       "npm:@neondatabase/serverless@1",
       "npm:drizzle-kit@~0.30.6",
       "npm:drizzle-orm@0.41",
+      "npm:flexsearch@~0.8.158",
       "npm:postgres@^3.4.5",
       "npm:tailwindcss@3.4.17"
     ]

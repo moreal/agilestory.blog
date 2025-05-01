@@ -26,6 +26,7 @@
     "drizzle-orm": "npm:drizzle-orm@^0.41.0",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
     "@langchain/ollama": "npm:@langchain/ollama@^0.2.0",
+    "flexsearch": "npm:flexsearch@^0.8.158",
     "postgres": "npm:postgres@^3.4.5",
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
     "preact": "https://esm.sh/preact@10.22.0",
