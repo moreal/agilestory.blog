@@ -84,6 +84,10 @@ export class DumpFileCommandHandler implements CommandHandler {
         timeMap.map((entry) =>
           this.contentProvider.load(entry)
             .then((content) => this.contentProcessor.process(content))
+            .then((processed) => ({
+              id: Number(entry.url.match(/(\d+)$/)?.[0]),
+              ...processed,
+            }))
             .catch((error) => {
               this.logger
                 .error`Failed to load content for ${entry.url}: ${error}`;
