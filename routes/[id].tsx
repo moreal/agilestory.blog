@@ -36,7 +36,10 @@ export const handler: Handlers<Data> = {
       return ctx.render(cached.value as Data);
     }
 
-    for (const post of posts.filter((post) => post.createdAt !== null)) {
+    // FIXME: need to precompute.
+    const filtered = posts.filter((post) => post.createdAt !== null);
+    for (let i = 0; i < filtered.length; i++) {
+      const post = filtered[i];
       if (post.id === id) {
         const { title, body, createdAt, internetArchiveUrl } = post;
         const postData = {
@@ -46,8 +49,8 @@ export const handler: Handlers<Data> = {
           internetArchiveUrl,
         };
 
-        const prevPost = posts.find((p) => p.id === id - 1) || null;
-        const nextPost = posts.find((p) => p.id === id + 1) || null;
+        const prevPost = i == 0 ? null : filtered[i - 1];
+        const nextPost = i == filtered.length - 1 ? null : filtered[i + 1];
 
         const returnValue: Data = {
           post: postData,
