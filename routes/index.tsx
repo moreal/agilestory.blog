@@ -1,9 +1,6 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import { db } from "@/db.ts";
-import { postsTable } from "@/schema.ts";
-import { isNotNull } from "drizzle-orm";
 import { YmdDate } from "@/components/YmdDate.tsx";
-import { DenoKvKeyValueStore } from "@/infra/storage/kv/mod.ts";
+import posts from "@/data.json" with { type: "json" };
 
 interface Data {
   posts: {
@@ -15,28 +12,14 @@ interface Data {
 
 export const handler: Handlers<Data> = {
   async GET(_, ctx) {
-    const kv = await DenoKvKeyValueStore.create();
-    const cacheKey = "posts";
-    const cached = await kv.get(cacheKey);
-    if (cached) {
-      return ctx.render({
-        posts: cached.value as Data["posts"],
-      });
-    }
-
-    const posts = await db.select({
-      id: postsTable.id,
-      title: postsTable.title,
-      createdAt: postsTable.createdAt,
-    }).from(postsTable).where(isNotNull(postsTable.createdAt)).orderBy(
-      postsTable.createdAt,
-    );
-
-    await kv.set(cacheKey, posts, {
-      expireIn: 1000 * 60 * 60 * 24, // 1 day
-    });
     return ctx.render({
-      posts: posts as Data["posts"],
+      posts: posts.filter((post) => post.createdAt !== null).map((post) => {
+        const createdAt = new Date(post.createdAt);
+        return {
+          ...post,
+          createdAt,
+        };
+      }),
     });
   },
 };

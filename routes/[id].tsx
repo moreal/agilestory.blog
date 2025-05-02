@@ -6,6 +6,7 @@ import { Head } from "$fresh/runtime.ts";
 import { FloatingButton } from "@/islands/FloatingButton.tsx";
 import { PostNavigation } from "@/components/PostNavigation.tsx";
 import { DenoKvKeyValueStore } from "@/infra/storage/kv/mod.ts";
+import posts from "@/data.json" with { type: "json" };
 
 interface Data {
   post: {
