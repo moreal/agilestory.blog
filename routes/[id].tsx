@@ -3,7 +3,6 @@ import { Head } from "$fresh/runtime.ts";
 import { FloatingButton } from "@/islands/FloatingButton.tsx";
 import { PostNavigation } from "@/components/PostNavigation.tsx";
 import posts from "@/data.json" with { type: "json" };
-import { DenoKvKeyValueStore } from "@/infra/storage/kv/mod.ts";
 
 interface Data {
   post: {
@@ -28,13 +27,6 @@ export const handler: Handlers<Data> = {
   async GET(_, ctx) {
     const { id: rawId } = ctx.params;
     const id = Number(rawId || "0");
-
-    const kv = await DenoKvKeyValueStore.create();
-    const cacheKey = `post:${id}`;
-    const cached = await kv.get(cacheKey);
-    if (cached) {
-      return ctx.render(cached.value as Data);
-    }
 
     // FIXME: need to precompute.
     const filtered = posts.filter((post) => post.createdAt !== null);
@@ -69,9 +61,6 @@ export const handler: Handlers<Data> = {
             }
             : null,
         };
-        await kv.set(cacheKey, returnValue, {
-          expireIn: 1000 * 60 * 60 * 24, // 1 day
-        });
 
         return ctx.render(returnValue);
       }
