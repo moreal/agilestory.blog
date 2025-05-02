@@ -34,18 +34,44 @@ export const handler: Handlers<Data> = {
       const post = filtered[i];
       if (post.id === id) {
         const { title, body, createdAt, internetArchiveUrl } = post;
-        const postData = {
-          title,
-          body,
-          createdAt: createdAt ? new Date(createdAt) : null,
-          internetArchiveUrl,
-        };
+
+        const regex =
+          /(href|src)="https:\/\/web\.archive\.org\/web\/[^\/]+\/(http[^"]+)"/g;
+        const sanitizedBody = body.replaceAll(/<hr>/g, '<hr class="my-4">')
+          .replace(
+            regex,
+            (match: string, attribute: string, url: string) => {
+              const SELF = "http://agile.egloos.com";
+              const ALLOWED_PREFIXES = [
+                "http://www.yes24.com",
+                "http://www.youtube.com",
+              ] as const;
+
+              if (url.startsWith(SELF)) {
+                const newUrl = url.replace(SELF, "");
+                return `${attribute}="${newUrl}"`;
+              }
+
+              for (const prefix of ALLOWED_PREFIXES) {
+                if (url.startsWith(prefix)) {
+                  return `${attribute}="${url}"`;
+                }
+              }
+
+              return match;
+            },
+          );
 
         const prevPost = i == 0 ? null : filtered[i - 1];
         const nextPost = i == filtered.length - 1 ? null : filtered[i + 1];
 
         const returnValue: Data = {
-          post: postData,
+          post: {
+            title,
+            body: sanitizedBody,
+            createdAt: createdAt ? new Date(createdAt) : null,
+            internetArchiveUrl,
+          },
           prevPost: prevPost
             ? {
               title: prevPost.title,
@@ -76,34 +102,6 @@ export const config: LayoutConfig = {
 
 export default function (props: PageProps<Data>) {
   const { createdAt, title, body, internetArchiveUrl } = props.data.post;
-
-  const sanitizedBody = body.replaceAll(/<hr>/g, '<hr class="my-4">');
-
-  const regex =
-    /(href|src)="https:\/\/web\.archive\.org\/web\/[^\/]+\/(http[^"]+)"/g;
-  const sanitizedBodyWithLinks = sanitizedBody.replace(
-    regex,
-    (match: string, attribute: string, url: string) => {
-      const SELF = "http://agile.egloos.com";
-      const ALLOWED_PREFIXES = [
-        "http://www.yes24.com",
-        "http://www.youtube.com",
-      ] as const;
-
-      if (url.startsWith(SELF)) {
-        const newUrl = url.replace(SELF, "");
-        return `${attribute}="${newUrl}"`;
-      }
-
-      for (const prefix of ALLOWED_PREFIXES) {
-        if (url.startsWith(prefix)) {
-          return `${attribute}="${url}"`;
-        }
-      }
-
-      return match;
-    },
-  );
 
   return (
     <>
@@ -139,7 +137,7 @@ export default function (props: PageProps<Data>) {
         </header>
         <div
           class="leading-[1.6] post-content"
-          dangerouslySetInnerHTML={{ __html: sanitizedBodyWithLinks }}
+          dangerouslySetInnerHTML={{ __html: body }}
         >
         </div>
         <hr class="w-full" />
