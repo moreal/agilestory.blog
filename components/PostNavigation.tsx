@@ -17,8 +17,9 @@ function NavigationItem(
     textOrder: "left" | "right";
   },
 ) {
+  const textOrderClass = textOrder === "left" ? "text-left" : "text-right";
   return (
-    <li class={`w-1/2 text-sm font-semibold text-${textOrder}`}>
+    <li class={`w-1/2 text-sm font-semibold ${textOrderClass}`}>
       <a
         href={`/${id}`}
         class="inline-block p-2 rounded hover:bg-gray-100 w-full"
