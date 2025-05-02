@@ -1,12 +1,9 @@
 import { Handlers, LayoutConfig, PageProps } from "$fresh/server.ts";
-import { db } from "@/db.ts";
-import { postsTable } from "@/schema.ts";
-import { and, asc, desc, eq, gt, isNotNull, lt } from "drizzle-orm";
 import { Head } from "$fresh/runtime.ts";
 import { FloatingButton } from "@/islands/FloatingButton.tsx";
 import { PostNavigation } from "@/components/PostNavigation.tsx";
-import { DenoKvKeyValueStore } from "@/infra/storage/kv/mod.ts";
 import posts from "@/data.json" with { type: "json" };
+import { DenoKvKeyValueStore } from "@/infra/storage/kv/mod.ts";
 
 interface Data {
   post: {
@@ -39,72 +36,45 @@ export const handler: Handlers<Data> = {
       return ctx.render(cached.value as Data);
     }
 
-    // Fetch current post
-    const currentPostResult = await db
-      .select({
-        title: postsTable.title,
-        createdAt: postsTable.createdAt,
-        body: postsTable.body,
-        internetArchiveUrl: postsTable.internetArchiveUrl,
-      })
-      .from(postsTable)
-      .where(eq(postsTable.id, id))
-      .limit(1);
+    for (const post of posts.filter((post) => post.createdAt !== null)) {
+      if (post.id === id) {
+        const { title, body, createdAt, internetArchiveUrl } = post;
+        const postData = {
+          title,
+          body,
+          createdAt: createdAt ? new Date(createdAt) : null,
+          internetArchiveUrl,
+        };
 
-    // NOTE: Ensure lt, gt, desc, asc are imported from "drizzle-orm"
-    // import { eq, lt, gt, desc, asc } from "drizzle-orm";
+        const prevPost = posts.find((p) => p.id === id - 1) || null;
+        const nextPost = posts.find((p) => p.id === id + 1) || null;
 
-    // Fetch previous post (post with the largest ID smaller than the current one)
-    const prevPostResult = await db
-      .select({
-        id: postsTable.id,
-        title: postsTable.title,
-        createdAt: postsTable.createdAt,
-      })
-      .from(postsTable)
-      .where(and(lt(postsTable.id, id), isNotNull(postsTable.createdAt)))
-      .orderBy(desc(postsTable.id))
-      .limit(1);
+        const returnValue: Data = {
+          post: postData,
+          prevPost: prevPost
+            ? {
+              title: prevPost.title,
+              createdAt: new Date(prevPost.createdAt!),
+              id: prevPost.id,
+            }
+            : null,
+          nextPost: nextPost
+            ? {
+              title: nextPost.title,
+              createdAt: new Date(nextPost.createdAt!),
+              id: nextPost.id,
+            }
+            : null,
+        };
+        await kv.set(cacheKey, returnValue, {
+          expireIn: 1000 * 60 * 60 * 24, // 1 day
+        });
 
-    // Fetch next post (post with the smallest ID larger than the current one)
-    const nextPostResult = await db
-      .select({
-        id: postsTable.id,
-        title: postsTable.title,
-        createdAt: postsTable.createdAt,
-      })
-      .from(postsTable)
-      .where(and(gt(postsTable.id, id), isNotNull(postsTable.createdAt)))
-      .orderBy(asc(postsTable.id))
-      .limit(1);
-
-    const result = currentPostResult; // Keep existing check logic
-    const prevPost = prevPostResult.length > 0
-      ? {
-        ...prevPostResult[0],
-        createdAt: prevPostResult[0].createdAt!,
+        return ctx.render(returnValue);
       }
-      : null;
-    const nextPost = nextPostResult.length > 0
-      ? {
-        ...nextPostResult[0],
-        createdAt: nextPostResult[0].createdAt!,
-      }
-      : null;
-
-    if (result.length === 0) {
-      return ctx.renderNotFound();
     }
 
-    const returnValue = {
-      post: result[0],
-      prevPost,
-      nextPost,
-    } as const;
-    await kv.set(cacheKey, returnValue, {
-      expireIn: 1000 * 60 * 60 * 24, // 1 day
-    });
-    return ctx.render(returnValue);
+    return ctx.renderNotFound();
   },
 };
 
