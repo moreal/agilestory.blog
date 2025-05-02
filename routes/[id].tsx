@@ -75,14 +75,14 @@ export const handler: Handlers<Data> = {
           prevPost: prevPost
             ? {
               title: prevPost.title,
-              createdAt: new Date(prevPost.createdAt!),
+              createdAt: new Date(prevPost.createdAt),
               id: prevPost.id,
             }
             : null,
           nextPost: nextPost
             ? {
               title: nextPost.title,
-              createdAt: new Date(nextPost.createdAt!),
+              createdAt: new Date(nextPost.createdAt),
               id: nextPost.id,
             }
             : null,
