@@ -86,6 +86,7 @@ export class DumpFileCommandHandler implements CommandHandler {
             .then((content) => this.contentProcessor.process(content))
             .then((processed) => ({
               id: Number(entry.url.match(/(\d+)$/)?.[0]),
+              internetArchiveUrl: buildArchiveUrl(entry),
               ...processed,
             }))
             .catch((error) => {
