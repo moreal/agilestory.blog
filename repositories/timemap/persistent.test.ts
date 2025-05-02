@@ -3,7 +3,6 @@ import { KVPersistentTimeMapRepository } from "./persistent.ts";
 import { InMemoryKeyValueStore } from "../../infra/storage/kv/memory.ts";
 import type { TimeMap } from "../../models/timemap.ts";
 import type { KeyValueStore } from "@/infra/storage/kv/mod.ts";
-import { timestamp } from "drizzle-orm/gel-core";
 
 Deno.test("KVPersistentTimeMapRepository", async (t) => {
   let kvStore: KeyValueStore;

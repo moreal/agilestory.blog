@@ -17,10 +17,6 @@ import {
   WaybackMachineServiceImpl,
 } from "@/services/mod.ts";
 import {
-  EmbeddingService,
-  OllamaEmbeddingService,
-} from "@/services/embedding/mod.ts";
-import {
   ContentProvider,
   RepositoryContentLoader,
   WaybackContentLoader,
@@ -38,8 +34,6 @@ import {
 // Configuration interface to allow for environment overrides
 export interface AppConfig {
   dataPath: string;
-  embeddingModel: string;
-  enableEmbeddingTruncation: boolean;
 }
 
 // Service factory interface for dependency injection
@@ -47,7 +41,6 @@ export interface ServiceFactory {
   createTimeMapRepository(): Promise<TimeMapRepository>;
   createContentRepository(): Promise<ContentRepository>;
   createWaybackMachineService(): WaybackMachineService;
-  createEmbeddingService(): EmbeddingService;
   createContentProcessor(): ContentProcessor;
 }
 
@@ -73,13 +66,6 @@ export class DefaultServiceFactory implements ServiceFactory {
     return new WaybackMachineServiceImpl();
   }
 
-  createEmbeddingService(): EmbeddingService {
-    return new OllamaEmbeddingService({
-      model: this.config.embeddingModel,
-      truncate: this.config.enableEmbeddingTruncation,
-    });
-  }
-
   createContentProcessor(): ContentProcessor {
     return new ContentProcessor();
   }
@@ -89,9 +75,6 @@ export class DefaultServiceFactory implements ServiceFactory {
 export function loadConfig(): AppConfig {
   return {
     dataPath: Deno.env.get("AGILEDATA") || "data",
-    embeddingModel: Deno.env.get("EMBEDDING_MODEL") || "bge-m3",
-    enableEmbeddingTruncation:
-      Deno.env.get("ENABLE_EMBEDDING_TRUNCATION") !== "false",
   };
 }
 
@@ -99,7 +82,6 @@ export type Dependencies = {
   timeMapProvider: TimeMapProvider;
   contentProvider: ContentProvider;
   contentProcessor: ContentProcessor;
-  embeddingService: EmbeddingService;
 };
 
 // Create the application dependencies
@@ -114,7 +96,6 @@ export async function prepareDependencies(
   const contentRepository = await factory.createContentRepository();
   const waybackService = factory.createWaybackMachineService();
   const contentProcessor = factory.createContentProcessor();
-  const embeddingService = factory.createEmbeddingService();
 
   // Create the providers using the repositories and services
   const timeMapProvider: TimeMapProvider = new FallbackTimeMapLoader(
@@ -154,6 +135,5 @@ export async function prepareDependencies(
     timeMapProvider,
     contentProvider,
     contentProcessor,
-    embeddingService,
   };
 }

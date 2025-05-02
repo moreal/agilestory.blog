@@ -7,16 +7,6 @@ on:
 
 jobs:
   deploy:
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: agilestory
-        ports:
-          - 5432:5432
-
     name: Deploy
     runs-on: ubuntu-latest
 
@@ -38,8 +28,6 @@ jobs:
 
       - name: Build step
         run: "deno task web:build"
-        env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/agilestory"
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
