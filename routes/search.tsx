@@ -4,10 +4,49 @@ import { YmdDate } from "@/components/YmdDate.tsx";
 import { Index } from "flexsearch";
 import data from "@/data.json" with { type: "json" };
 
+/**
+ * Extract a snippet from text around the first occurrence of the keyword
+ * @param text The full text to search in
+ * @param keyword The keyword to find
+ * @param maxLength Maximum length of the snippet (default: 150)
+ * @returns A snippet with the keyword highlighted, or empty string if not found
+ */
+function extractSnippet(text: string, keyword: string, maxLength = 150): string {
+  const lowerText = text.toLowerCase();
+  const lowerKeyword = keyword.toLowerCase();
+  
+  const index = lowerText.indexOf(lowerKeyword);
+  if (index === -1) {
+    return "";
+  }
+  
+  // Calculate start and end positions for the snippet
+  const halfLength = Math.floor((maxLength - keyword.length) / 2);
+  const start = Math.max(0, index - halfLength);
+  const end = Math.min(text.length, index + keyword.length + halfLength);
+  
+  let snippet = text.substring(start, end);
+  
+  // Add ellipsis if we're not at the beginning/end
+  if (start > 0) {
+    snippet = "..." + snippet;
+  }
+  if (end < text.length) {
+    snippet = snippet + "...";
+  }
+  
+  // Highlight the keyword (case-insensitive)
+  const regex = new RegExp(`(${keyword})`, 'gi');
+  snippet = snippet.replace(regex, '<strong>$1</strong>');
+  
+  return snippet;
+}
+
 interface Post {
   id: number;
   title: string;
   createdAt: Date;
+  snippet?: string;
 }
 
 interface Data {
@@ -67,10 +106,15 @@ export const handler: Handlers<Data> = {
             return null;
           }
 
+          // Extract snippet from title and body combined
+          const fullText = post.title + "\n\n" + post.body;
+          const snippet = extractSnippet(fullText, q);
+
           return {
             id: post.id,
             title: post.title,
             createdAt: new Date(post.createdAt),
+            snippet,
           };
         }).filter((post) => post !== null) as Post[],
       },
@@ -100,14 +144,21 @@ export default function (props: PageProps<Data>) {
             "<span class="font-semibold">{keyword}</span>"의 검색 결과
           </h1>
           <ol class="w-full list-none m-0 p-0 flex flex-col gap-1">
-            {result.posts.map(({ title, createdAt, id }) => (
+            {result.posts.map(({ title, createdAt, id, snippet }) => (
               <li class="w-full list-none" key={title}>
-                <a class="flex flex-row gap-4" href={`${id}`}>
-                  <YmdDate
-                    date={createdAt!}
-                    class="font-light w-24 text-gray-400"
-                  />
-                  <span class="border-b-2">{title}</span>
+                <a class="flex flex-col gap-2 p-3 hover:bg-gray-50 rounded-md" href={`${id}`}>
+                  <div class="flex flex-row gap-4 items-start">
+                    <YmdDate
+                      date={createdAt!}
+                      class="font-light w-24 text-gray-400 text-xs"
+                    />
+                    <span class="border-b-2 font-medium">{title}</span>
+                  </div>
+                  {snippet && (
+                    <div class="text-sm text-gray-600 ml-28">
+                      <span dangerouslySetInnerHTML={{ __html: snippet }} />
+                    </div>
+                  )}
                 </a>
               </li>
             ))}
