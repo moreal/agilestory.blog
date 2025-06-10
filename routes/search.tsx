@@ -1,14 +1,9 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import { YmdDate } from "@/components/YmdDate.tsx";
+import { SearchResultItem, SearchResultPost } from "@/components/SearchResultItem.tsx";
+import { extractSnippet } from "@/services/snippet.ts";
 
 import { Index } from "flexsearch";
 import data from "@/data.json" with { type: "json" };
-
-interface Post {
-  id: number;
-  title: string;
-  createdAt: Date;
-}
 
 interface Data {
   result: {
@@ -16,7 +11,7 @@ interface Data {
   } | {
     status: "ok";
     keyword: string;
-    posts: Post[];
+    posts: SearchResultPost[];
   };
 }
 
@@ -67,12 +62,31 @@ export const handler: Handlers<Data> = {
             return null;
           }
 
+          // Extract snippet from title and body combined, prioritizing title matches
+          const titleText = post.title;
+          const bodyText = post.body;
+          let snippet = "";
+          
+          // First try to find the keyword in the title
+          if (titleText.toLowerCase().includes(q.toLowerCase())) {
+            snippet = extractSnippet(titleText, q, 100);
+          }
+          
+          // If no title match or title snippet is too short, try body
+          if (!snippet || snippet.length < 20) {
+            const bodySnippet = extractSnippet(bodyText, q);
+            if (bodySnippet) {
+              snippet = bodySnippet;
+            }
+          }
+
           return {
             id: post.id,
             title: post.title,
             createdAt: new Date(post.createdAt),
+            snippet,
           };
-        }).filter((post) => post !== null) as Post[],
+        }).filter((post) => post !== null) as SearchResultPost[],
       },
     });
   },
@@ -100,16 +114,8 @@ export default function (props: PageProps<Data>) {
             "<span class="font-semibold">{keyword}</span>"의 검색 결과
           </h1>
           <ol class="w-full list-none m-0 p-0 flex flex-col gap-1">
-            {result.posts.map(({ title, createdAt, id }) => (
-              <li class="w-full list-none" key={title}>
-                <a class="flex flex-row gap-4" href={`${id}`}>
-                  <YmdDate
-                    date={createdAt!}
-                    class="font-light w-24 text-gray-400"
-                  />
-                  <span class="border-b-2">{title}</span>
-                </a>
-              </li>
+            {result.posts.map((post) => (
+              <SearchResultItem key={post.title} post={post} />
             ))}
           </ol>
         </div>
