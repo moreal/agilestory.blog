@@ -5,6 +5,24 @@ import { Index } from "flexsearch";
 import data from "@/data.json" with { type: "json" };
 
 /**
+ * Strip HTML tags from text content
+ * @param html HTML content to clean
+ * @returns Plain text content
+ */
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').trim();
+}
+
+/**
+ * Escape special regex characters in a string
+ * @param str String to escape
+ * @returns Escaped string safe for regex
+ */
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * Extract a snippet from text around the first occurrence of the keyword
  * @param text The full text to search in
  * @param keyword The keyword to find
@@ -12,7 +30,9 @@ import data from "@/data.json" with { type: "json" };
  * @returns A snippet with the keyword highlighted, or empty string if not found
  */
 function extractSnippet(text: string, keyword: string, maxLength = 150): string {
-  const lowerText = text.toLowerCase();
+  // Strip HTML tags for clean text search and display
+  const cleanText = stripHtml(text);
+  const lowerText = cleanText.toLowerCase();
   const lowerKeyword = keyword.toLowerCase();
   
   const index = lowerText.indexOf(lowerKeyword);
@@ -23,20 +43,21 @@ function extractSnippet(text: string, keyword: string, maxLength = 150): string 
   // Calculate start and end positions for the snippet
   const halfLength = Math.floor((maxLength - keyword.length) / 2);
   const start = Math.max(0, index - halfLength);
-  const end = Math.min(text.length, index + keyword.length + halfLength);
+  const end = Math.min(cleanText.length, index + keyword.length + halfLength);
   
-  let snippet = text.substring(start, end);
+  let snippet = cleanText.substring(start, end);
   
   // Add ellipsis if we're not at the beginning/end
   if (start > 0) {
     snippet = "..." + snippet;
   }
-  if (end < text.length) {
+  if (end < cleanText.length) {
     snippet = snippet + "...";
   }
   
-  // Highlight the keyword (case-insensitive)
-  const regex = new RegExp(`(${keyword})`, 'gi');
+  // Highlight the keyword (case-insensitive) with escaped regex
+  const escapedKeyword = escapeRegex(keyword);
+  const regex = new RegExp(`(${escapedKeyword})`, 'gi');
   snippet = snippet.replace(regex, '<strong>$1</strong>');
   
   return snippet;
@@ -106,9 +127,23 @@ export const handler: Handlers<Data> = {
             return null;
           }
 
-          // Extract snippet from title and body combined
-          const fullText = post.title + "\n\n" + post.body;
-          const snippet = extractSnippet(fullText, q);
+          // Extract snippet from title and body combined, prioritizing title matches
+          const titleText = post.title;
+          const bodyText = post.body;
+          let snippet = "";
+          
+          // First try to find the keyword in the title
+          if (titleText.toLowerCase().includes(q.toLowerCase())) {
+            snippet = extractSnippet(titleText, q, 100);
+          }
+          
+          // If no title match or title snippet is too short, try body
+          if (!snippet || snippet.length < 20) {
+            const bodySnippet = extractSnippet(bodyText, q);
+            if (bodySnippet) {
+              snippet = bodySnippet;
+            }
+          }
 
           return {
             id: post.id,
@@ -155,7 +190,7 @@ export default function (props: PageProps<Data>) {
                     <span class="border-b-2 font-medium">{title}</span>
                   </div>
                   {snippet && (
-                    <div class="text-sm text-gray-600 ml-28">
+                    <div class="text-sm text-gray-600 ml-28 search-snippet">
                       <span dangerouslySetInnerHTML={{ __html: snippet }} />
                     </div>
                   )}

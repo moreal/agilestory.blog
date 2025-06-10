@@ -96,3 +96,15 @@
   font-weight: bold;
   unicode-bidi: isolate;
 }
+
+.search-snippet {
+  line-height: 1.5;
+}
+
+.search-snippet strong {
+  background-color: #fef3c7;
+  color: #92400e;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+}
