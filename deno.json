@@ -29,7 +29,7 @@
     "$std/": "https://deno.land/std@0.216.0/",
     "@/": "./"
   },
-  "nodeModulesDir": "auto",
+  "nodeModulesDir": true,
   "unstable": ["temporal", "kv"],
   "compilerOptions": {
     "lib": [
