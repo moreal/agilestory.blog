@@ -5,4 +5,4 @@ export {
   WaybackMachineServiceImpl,
 } from "./wayback.ts";
 export * from "./loaders/mod.ts";
-export { extractSnippet, stripHtml, escapeRegex } from "./snippet.ts";
+export { escapeRegex, extractSnippet, stripHtml } from "./snippet.ts";

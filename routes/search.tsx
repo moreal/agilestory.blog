@@ -1,5 +1,8 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import { SearchResultItem, SearchResultPost } from "@/components/SearchResultItem.tsx";
+import {
+  SearchResultItem,
+  SearchResultPost,
+} from "@/components/SearchResultItem.tsx";
 import { extractSnippet } from "@/services/snippet.ts";
 
 import { Index } from "flexsearch";
@@ -66,12 +69,12 @@ export const handler: Handlers<Data> = {
           const titleText = post.title;
           const bodyText = post.body;
           let snippet = "";
-          
+
           // First try to find the keyword in the title
           if (titleText.toLowerCase().includes(q.toLowerCase())) {
             snippet = extractSnippet(titleText, q, 100);
           }
-          
+
           // If no title match or title snippet is too short, try body
           if (!snippet || snippet.length < 20) {
             const bodySnippet = extractSnippet(bodyText, q);

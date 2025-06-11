@@ -13,10 +13,13 @@ interface SearchResultItemProps {
 
 export function SearchResultItem({ post }: SearchResultItemProps) {
   const { title, createdAt, id, snippet } = post;
-  
+
   return (
     <li class="w-full list-none">
-      <a class="flex flex-col gap-2 p-3 hover:bg-gray-50 rounded-md" href={`${id}`}>
+      <a
+        class="flex flex-col gap-2 p-3 hover:bg-gray-50 rounded-md"
+        href={`${id}`}
+      >
         <div class="flex flex-row gap-4 items-start">
           <YmdDate
             date={createdAt}
