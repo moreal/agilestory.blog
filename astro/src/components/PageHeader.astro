@@ -1,0 +1,20 @@
+---
+import SearchForm from "./SearchForm.astro";
+import * as constants from "../../../shared/constants.ts";
+
+export interface Props {
+  searchQuery?: string;
+}
+
+const { searchQuery } = Astro.props;
+---
+
+<header class="mb-8">
+  <h1 class="text-3xl font-bold mb-4">
+    <a href="/" class="text-blue-600 hover:text-blue-800">
+      {constants.TITLE}
+    </a>
+  </h1>
+  
+  <SearchForm query={searchQuery} />
+</header>

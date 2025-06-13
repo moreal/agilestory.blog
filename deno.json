@@ -1,14 +1,19 @@
 {
   "tasks": {
-    "tool:download": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents tools/main.ts download",
-    "tool:dump-file": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents tools/main.ts dump-file",
+    "tool:download": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents shared/tools/main.ts download",
+    "tool:dump-file": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents shared/tools/main.ts dump-file",
+
+    "astro:dev": "cd astro && deno run -A npm:astro dev",
+    "astro:build": "cd astro && deno run -A npm:astro build",
+    "astro:preview": "cd astro && deno run -A npm:astro preview",
+    "astro:check": "cd astro && deno run -A npm:astro check && deno fmt --check && deno lint",
 
     "web:check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
     "web:cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run --unstable -A -",
     "web:manifest": "deno task cli manifest $(pwd)",
-    "web:start": "deno run -A --watch=static/,routes/ dev.ts",
-    "web:build": "deno run -A dev.ts build",
-    "web:preview": "deno run -A main.ts",
+    "web:start": "deno run -A --watch=fresh/static/,fresh/routes/ fresh/dev.ts",
+    "web:build": "deno run -A fresh/dev.ts build",
+    "web:preview": "deno run -A fresh/main.ts",
     "web:update": "deno run -A -r https://fresh.deno.dev/update ."
   },
   "imports": {

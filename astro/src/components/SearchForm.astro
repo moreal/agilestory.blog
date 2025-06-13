@@ -1,0 +1,26 @@
+---
+export interface Props {
+  query?: string;
+  className?: string;
+}
+
+const { query = "", className = "max-w-md" } = Astro.props;
+---
+
+<form method="GET" action="/search" class={className}>
+  <div class="flex gap-2">
+    <input
+      type="text"
+      name="q"
+      value={query}
+      placeholder="검색어를 입력하세요..."
+      class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <button
+      type="submit"
+      class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      검색
+    </button>
+  </div>
+</form>

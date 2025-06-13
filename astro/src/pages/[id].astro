@@ -1,0 +1,124 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { PostNavigation } from "../components/PostNavigation.tsx";
+import { FloatingButton } from "../components/FloatingButton.tsx";
+import data from "../../../data.json";
+
+export async function getStaticPaths() {
+  // Generate paths for all posts with valid createdAt
+  const validPosts = data.filter((post) => post.createdAt);
+
+  return validPosts.map((post) => ({
+    params: { id: post.id.toString() },
+  }));
+}
+
+const { id } = Astro.params;
+
+// Find the current post
+const post = data.find((p) => p.id === Number(id));
+
+if (!post) {
+  // Return 404 response (Astro will automatically serve the 404.astro page)
+  return new Response(null, {
+    status: 404,
+    statusText: 'Not Found'
+  });
+}
+
+// Filter and sort posts for navigation (same logic as Fresh)
+const validPosts = data.filter((p) => p.createdAt)
+  .map((p) => ({
+    ...p,
+    createdAt: new Date(p.createdAt as string),
+  }))
+  .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+// Find current post index for navigation
+const currentIndex = validPosts.findIndex((p) => p.id === Number(id));
+const prevPost = currentIndex > 0 ? validPosts[currentIndex - 1] : null;
+const nextPost = currentIndex < validPosts.length - 1 ? validPosts[currentIndex + 1] : null;
+
+// Process content (same logic as Fresh)
+let processedBody = post.body;
+
+// Remove Internet Archive wrapper from URLs
+processedBody = processedBody.replace(
+  /https:\/\/web\.archive\.org\/web\/\d+\//g,
+  ""
+);
+
+// Allow specific external domains and internal links
+const allowedDomains = ["yes24.com", "youtube.com"];
+const domainRegex = new RegExp(
+  `https?:\\/\\/(?:www\\.)?(${allowedDomains.join("|")})`,
+  "gi"
+);
+
+// Process links (keeping the same logic as Fresh)
+processedBody = processedBody.replace(
+  /<a\s+([^>]*?)href="([^"]*?)"([^>]*?)>/gi,
+  (match, beforeHref, url, afterHref) => {
+    // Allow internal links (starting with /)
+    if (url.startsWith("/")) {
+      return match;
+    }
+    
+    // Allow specific domains
+    if (domainRegex.test(url)) {
+      return match;
+    }
+    
+    // Convert other external links to span
+    return `<span${beforeHref}${afterHref}>`;
+  }
+);
+
+// Add CSS classes to hr tags
+processedBody = processedBody.replace(
+  /<hr\s*\/?>/gi,
+  '<hr class="my-8 border-gray-300" />'
+);
+---
+
+<Layout title={post.title}>
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <!-- <PageHeader /> -->
+
+    <!-- Post Content -->
+    <article class="max-w-screen-sm mx-auto flex flex-col items-center justify-center gap-8 px-4">
+      <header class="mb-8">
+        <nav class="w-full">
+          <a class="left w-full max-w-xl text-sm font-semibold" href="/">
+            {"<"} 목록으로 가기
+          </a>
+        </nav>
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">
+          {post.title}
+        </h1>
+        {post.createdAt && (
+          <div class="text-sm text-gray-500">
+            {new Date(post.createdAt).toLocaleDateString('ko-KR', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </div>
+        )}
+      </header>
+
+      <div 
+        class="prose prose-lg max-w-none"
+        set:html={processedBody}
+      >
+      </div>
+    </article>
+
+    <!-- Post Navigation -->
+    <PostNavigation prevPost={prevPost} nextPost={nextPost} />
+  </div>
+
+  <!-- Floating Button -->
+  <FloatingButton client:load />
+</Layout>

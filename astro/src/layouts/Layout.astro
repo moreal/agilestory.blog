@@ -1,0 +1,73 @@
+---
+import * as constants from "../../../shared/constants.ts";
+import "../styles/global.css";
+
+export interface Props {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+}
+
+const { title, description, keywords } = Astro.props;
+const pageTitle = title ? `${title} - ${constants.TITLE}` : constants.TITLE;
+const pageDescription = description || "한국 애자일 개발 커뮤니티의 아카이브 서비스";
+const pageKeywords = keywords || ["애자일", "agile", "소프트웨어", "개발", "방법론"];
+---
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={pageDescription} />
+    <meta name="keywords" content={pageKeywords.join(", ")} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary" />
+    <meta property="twitter:title" content={pageTitle} />
+    <meta property="twitter:description" content={pageDescription} />
+
+    <link rel="stylesheet" href="/styles.css" />
+    
+    <title>{pageTitle}</title>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div class="min-h-screen flex flex-col">
+      <!-- Warning Banner -->
+      <div class="bg-yellow-100 border-b border-yellow-200 p-3">
+        <div class="max-w-4xl mx-auto">
+          <p set:html={constants.WARNING_MESSAGE}></p>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <main class="flex-1">
+        <slot />
+      </main>
+
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-6">
+        <div class="max-w-4xl mx-auto px-4 text-center text-sm text-gray-600">
+          <p>
+            © 2024 {constants.TITLE}. 
+            <a href={constants.GITHUB_URL} class="text-blue-600 hover:underline">
+              AGPL-3.0 라이선스
+            </a>
+            로 제공됩니다.
+          </p>
+          <p class="mt-1">
+            콘텐츠의 저작권은 원저작자에게 있습니다.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

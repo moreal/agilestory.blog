@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv:*)",
+      "Bash(deno task:*)",
+      "Bash(deno fmt:*)",
+      "Bash(deno test:*)",
+      "Bash(deno run:*)",
+      "Bash(deno check:*)"
+    ],
+    "deny": [
+      "Read(.env)"
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { YmdDate } from "../components/YmdDate.tsx";
+import data from "../../../data.json";
+
+// Filter and process posts (same logic as Fresh)
+const posts = data.filter((post) => post.createdAt)
+  .map((post) => ({
+    ...post,
+    createdAt: new Date(post.createdAt as string),
+  }));
+---
+
+<Layout>
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <PageHeader />
+
+    <!-- Posts List -->
+    <div class="space-y-4">
+      {posts.map((post) => (
+        <article class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+          <h2 class="text-xl font-semibold mb-2">
+            <a 
+              href={`/${post.id}`}
+              class="text-gray-900 hover:text-blue-600 transition-colors"
+            >
+              {post.title}
+            </a>
+          </h2>
+          <div class="text-sm text-gray-500">
+            <YmdDate date={post.createdAt} />
+          </div>
+        </article>
+      ))}
+    </div>
+
+    {posts.length === 0 && (
+      <div class="text-center py-12">
+        <p class="text-gray-500">표시할 게시물이 없습니다.</p>
+      </div>
+    )}
+  </div>
+</Layout>
