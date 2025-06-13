@@ -4,7 +4,7 @@ import PageHeader from "../components/PageHeader.astro";
 import { YmdDate } from "../components/YmdDate.tsx";
 import data from "../../../data.json";
 
-// Filter and process posts (same logic as Fresh)
+// Filter and process posts
 const posts = data.filter((post) => post.createdAt)
   .map((post) => ({
     ...post,

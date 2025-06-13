@@ -9,9 +9,6 @@ This guide covers deploying the migrated Astro application to production.
 ```bash
 # Start Astro development server
 deno task astro:dev
-
-# Start Fresh development server (for comparison)
-deno task web:start
 ```
 
 ### Production Build
@@ -109,17 +106,6 @@ Monitor these endpoints:
 - Korean text rendering performance
 - Memory usage for large post collections
 
-## Rollback Plan
-
-If issues arise, the original Fresh application is maintained:
-
-```bash
-# Switch back to Fresh
-deno task web:start    # Development
-deno task web:build    # Production build
-deno task web:preview  # Production preview
-```
-
 ## Data Management
 
 ### Content Updates
@@ -178,10 +164,10 @@ The application sets security headers:
 
 ### Support
 
-For migration-related issues:
+For application issues:
 
-1. Check the Fresh version works correctly
-2. Compare component behavior between versions
+1. Check application logs and error messages
+2. Verify component behavior and functionality
 3. Review shared business logic tests
 4. Verify data integrity with verification script
 
@@ -196,7 +182,7 @@ For migration-related issues:
 
 ### Performance Success
 
-- ✅ Page load times comparable to Fresh
+- ✅ Fast page load times
 - ✅ Search response under 500ms
 - ✅ Memory usage stable under load
 - ✅ No JavaScript errors in console

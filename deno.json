@@ -15,14 +15,6 @@
     "@std/testing": "jsr:@std/testing@^1.0.11",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
     "flexsearch": "npm:flexsearch@^0.8.158",
-    "$fresh/": "https://deno.land/x/fresh@1.7.3/",
-    "preact": "https://esm.sh/preact@10.22.0",
-    "preact/": "https://esm.sh/preact@10.22.0/",
-    "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
-    "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
-    "tailwindcss": "npm:tailwindcss@3.4.17",
-    "tailwindcss/": "npm:/tailwindcss@3.4.17/",
-    "tailwindcss/plugin": "npm:/tailwindcss@3.4.17/plugin.js",
     "$std/": "https://deno.land/std@0.216.0/",
     "@/": "./"
   },
@@ -35,16 +27,5 @@
     ],
     "jsx": "react-jsx",
     "jsxImportSource": "preact"
-  },
-  "exclude": [
-    "**/_fresh/*"
-  ],
-  "lint": {
-    "rules": {
-      "tags": [
-        "fresh",
-        "recommended"
-      ]
-    }
   }
 }

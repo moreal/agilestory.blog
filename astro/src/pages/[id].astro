@@ -27,7 +27,7 @@ if (!post) {
   });
 }
 
-// Filter and sort posts for navigation (same logic as Fresh)
+// Filter and sort posts for navigation
 const validPosts = data.filter((p) => p.createdAt)
   .map((p) => ({
     ...p,
@@ -40,7 +40,7 @@ const currentIndex = validPosts.findIndex((p) => p.id === Number(id));
 const prevPost = currentIndex > 0 ? validPosts[currentIndex - 1] : null;
 const nextPost = currentIndex < validPosts.length - 1 ? validPosts[currentIndex + 1] : null;
 
-// Process content (same logic as Fresh)
+// Process content
 let processedBody = post.body;
 
 // Remove Internet Archive wrapper from URLs
@@ -56,7 +56,7 @@ const domainRegex = new RegExp(
   "gi"
 );
 
-// Process links (keeping the same logic as Fresh)
+// Process links
 processedBody = processedBody.replace(
   /<a\s+([^>]*?)href="([^"]*?)"([^>]*?)>/gi,
   (match, beforeHref, url, afterHref) => {

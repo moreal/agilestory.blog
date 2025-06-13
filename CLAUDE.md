@@ -9,16 +9,16 @@ code in this repository.
 
 ```bash
 # Start development server with file watching
-deno task web:start
+deno task astro:dev
 
 # Build the application
-deno task web:build
+deno task astro:build
 
 # Preview production build
-deno task web:preview
+deno task astro:preview
 
 # Lint, format, and type check
-deno task web:check
+deno task astro:check
 ```
 
 ### Data Management
@@ -46,7 +46,7 @@ deno test --coverage
 
 ## Architecture Overview
 
-This is a **Fresh framework** application that archives and serves blog content
+This is an **Astro framework** application that archives and serves blog content
 from Internet Archive's Wayback Machine. The architecture follows **Clean
 Architecture principles** with clear separation of concerns.
 
@@ -76,7 +76,7 @@ implementations:
 ```
 Internet Archive API → WaybackMachineService → ContentLoader → Repository → KV Store
                                           ↓
-Fresh Routes ← ContentProvider ← FallbackContentLoader (with graceful fallback)
+Astro Pages ← ContentProvider ← FallbackContentLoader (with graceful fallback)
 ```
 
 ### Key Design Patterns

@@ -14,7 +14,7 @@ let searchResults: SearchResultPost[] = [];
 let status: "no-query" | "no-results" | "success" = "no-query";
 
 if (q && q.trim()) {
-  // Initialize FlexSearch index (same configuration as Fresh)
+  // Initialize FlexSearch index
   const index = new Index({
     preset: "memory",
     tokenize: "full",
@@ -38,7 +38,7 @@ if (q && q.trim()) {
     searchResults = searchResultIds.map((resultId) => {
       const post = validPosts[resultId];
       
-      // Extract snippet (same logic as Fresh)
+      // Extract snippet
       const titleText = post.title;
       const bodyText = post.body;
       let snippet = "";

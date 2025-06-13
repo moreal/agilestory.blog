@@ -1,3 +1,9 @@
+# Fresh to Astro Migration Plan (ARCHIVED)
+
+> **Note**: This document is archived. The migration has been completed
+> successfully. See [MIGRATION-REPORT.md](./MIGRATION-REPORT.md) for the final
+> status.
+
 # Fresh to Astro Migration Plan
 
 ## Overview
