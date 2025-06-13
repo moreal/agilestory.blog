@@ -2,9 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    sans-serif,
+    Apple Color Emoji,
+    Segoe UI Emoji,
+    Segoe UI Symbol,
+    Noto Color Emoji;
+}
+
 .post-content {
-  /* 32px = 16px * 2 = tailwind v3 p-4 is 16px */
-  max-width: calc(100vw - 32px);
+  margin: 0 24px;
+}
+
+@media (min-width: 728px) {
+  .post-content {
+    max-width: 680px;
+  }
 }
 
 .post-content a {
@@ -23,11 +39,14 @@
 }
 
 .post-content blockquote {
-  border-left: 4px solid gray;
+  box-shadow: inset 3px 0 0 0 gray;
+  margin: 0;
+  margin-left: -20px;
+  padding-left: 23px;
+  max-width: unset;
+  padding-right: 23px;
+  margin-right: -20px;
   background-color: #f1ffdf;
-  padding-left: 1em;
-  padding-right: 1em;
-  margin: 2em 0;
 
   padding-top: 1em;
   padding-bottom: 1em;

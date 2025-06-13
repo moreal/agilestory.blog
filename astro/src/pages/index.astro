@@ -13,32 +13,43 @@ const posts = data.filter((post) => post.createdAt)
 ---
 
 <Layout>
-  <div class="max-w-4xl mx-auto px-4 py-8">
-    <PageHeader />
+  <PageHeader />
 
-    <!-- Posts List -->
-    <div class="space-y-4">
+  <!-- Posts List -->
+   <div class="flex w-screen justify-center">
+    <div class="space-y-8 max-w-[680px]">
       {posts.map((post) => (
-        <article class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-          <h2 class="text-xl font-semibold mb-2">
-            <a 
-              href={`/${post.id}`}
-              class="text-gray-900 hover:text-blue-600 transition-colors"
-            >
-              {post.title}
-            </a>
-          </h2>
-          <div class="text-sm text-gray-500">
-            <YmdDate date={post.createdAt} />
+        <article class="group">
+          <div class="flex items-baseline gap-4">
+            <YmdDate 
+              date={post.createdAt} 
+              class="text-sm text-gray-500 flex-shrink-0"
+            />
+            <div class="min-w-0">
+              <h2 class="text-xl font-medium leading-tight">
+                <a 
+                  href={`/${post.id}`}
+                  class="text-gray-900 hover:text-blue-600 transition-colors duration-200"
+                >
+                  {post.title}
+                </a>
+              </h2>
+            </div>
           </div>
         </article>
       ))}
     </div>
-
-    {posts.length === 0 && (
-      <div class="text-center py-12">
-        <p class="text-gray-500">표시할 게시물이 없습니다.</p>
-      </div>
-    )}
   </div>
+
+  {posts.length === 0 && (
+    <div class="text-center py-20">
+      <div class="max-w-md mx-auto">
+        <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">표시할 게시물이 없습니다</h3>
+        <p class="text-gray-500">현재 표시할 수 있는 콘텐츠가 없습니다.</p>
+      </div>
+    </div>
+  )}
 </Layout>

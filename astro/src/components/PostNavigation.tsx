@@ -11,28 +11,34 @@ interface PostNavigationProps {
 }
 
 function NavigationItem(
-  { post: { id, title }, navigationMessage, textOrder }: {
+  { post: { id, title }, navigationMessage: _navigationMessage, textOrder }: {
     post: Post;
     navigationMessage: string;
     textOrder: "left" | "right";
   },
 ) {
   const textOrderClass = textOrder === "left" ? "text-left" : "text-right";
+  const arrowIcon = textOrder === "left" ? "←" : "→";
+
   return (
-    <li class={`w-1/2 text-sm font-semibold ${textOrderClass}`}>
+    <li class={`flex-1 ${textOrderClass}`}>
       <a
         href={`/${id}`}
-        class="inline-block p-2 rounded hover:bg-gray-100 w-full"
+        class="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors duration-200"
       >
-        <p>{navigationMessage}</p>
-        <p class="text-gray-600 break-words">{title}</p>
+        <div class="text-xs text-blue-600 font-medium mb-1">
+          {arrowIcon} {textOrder === "left" ? "이전 글" : "다음 글"}
+        </div>
+        <p class="text-sm font-medium text-gray-900 line-clamp-2">
+          {title}
+        </p>
       </a>
     </li>
   );
 }
 
 function NavigationSpacer() {
-  return <li class="w-1/2"></li>;
+  return <li class="flex-1"></li>;
 }
 
 function NavigationItemOrSpacer(
@@ -57,8 +63,8 @@ function NavigationItemOrSpacer(
 
 export function PostNavigation({ prevPost, nextPost }: PostNavigationProps) {
   return (
-    <nav class="w-full">
-      <ul class="flex flex-row justify-between w-full gap-4">
+    <nav class="mt-8 mb-8">
+      <ul class="flex gap-4">
         <NavigationItemOrSpacer
           post={prevPost}
           navigationMessage={`< ${constants.PREVIOUS_POST_MESSAGE}`}

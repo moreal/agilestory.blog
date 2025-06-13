@@ -10,11 +10,15 @@ const { searchQuery } = Astro.props;
 ---
 
 <header class="mb-8">
-  <h1 class="text-3xl font-bold mb-4">
-    <a href="/" class="text-blue-600 hover:text-blue-800">
-      {constants.TITLE}
-    </a>
-  </h1>
+  <div class="text-center space-y-4">
+    <h1 class="text-2xl font-bold text-gray-900">
+      <a href="/" class="hover:text-blue-600 transition-colors duration-200">
+        {constants.TITLE}
+      </a>
+    </h1>
+  </div>
   
-  <SearchForm query={searchQuery} />
+  <div class="mt-6 flex justify-center">
+    <SearchForm query={searchQuery} className="w-full max-w-lg" />
+  </div>
 </header>

@@ -6,8 +6,6 @@ import { extractSnippet } from "../../../shared/services/snippet.ts";
 import { Index } from "flexsearch";
 import data from "../../../data.json";
 
-export const prerender = false;
-
 // Get search query from URL parameters
 const url = new URL(Astro.request.url);
 const q = url.searchParams.get("q");
@@ -69,46 +67,48 @@ if (q && q.trim()) {
     status = "no-results";
   }
 }
-
-console.log("here", searchResults)
 ---
 
 <Layout title={q ? `"${q}" 검색 결과` : "검색"}>
-  <div class="max-w-4xl mx-auto px-4 py-8">
-    <PageHeader searchQuery={q || ""} />
+  <PageHeader searchQuery={q || ""} />
 
-    <!-- Search Results -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+  <!-- Search Results -->
+  <div class="w-full flex justify-center">
+    <div class="max-w-[680px]">
       {status === "no-query" && (
-        <div class="text-center py-12">
-          <h2 class="text-xl font-semibold text-gray-900 mb-2">검색</h2>
-          <p class="text-gray-600">검색어를 입력해 주세요.</p>
+        <div class="text-center py-16">
+          <div class="max-w-md mx-auto">
+            <h2 class="text-xl font-medium text-gray-900 mb-2">검색을 시작해보세요</h2>
+            <p class="text-gray-600">
+              찾고 싶은 내용의 키워드를 입력해 주세요.
+            </p>
+          </div>
         </div>
       )}
 
       {status === "no-results" && (
-        <div class="text-center py-12">
-          <h2 class="text-xl font-semibold text-gray-900 mb-2">
-            "{q}" 검색 결과
-          </h2>
-          <p class="text-gray-600">검색 결과가 없습니다.</p>
-          <p class="text-sm text-gray-500 mt-2">
-            다른 검색어를 시도해 보세요.
-          </p>
+        <div class="text-center py-16">
+          <div class="max-w-md mx-auto">
+            <h2 class="text-xl font-medium text-gray-900 mb-2">
+              "<span class="text-blue-600">{q}</span>" 검색 결과가 없습니다
+            </h2>
+            <p class="text-gray-600">다른 검색어를 시도해 보세요.</p>
+          </div>
         </div>
       )}
 
       {status === "success" && (
         <div>
-          <h2 class="text-xl font-semibold text-gray-900 mb-6">
-            "{q}" 검색 결과 ({searchResults.length}개)
-          </h2>
+          <div class="mb-8">
+            <h2 class="text-lg font-medium text-gray-900 mb-1">
+              "<span class="text-blue-600">{q}</span>" 검색 결과
+            </h2>
+            <p class="text-sm text-gray-500">{searchResults.length}개 발견</p>
+          </div>
           
-          <div class="space-y-4">
+          <div class="space-y-6">
             {searchResults.map((result) => (
-              <SearchResultItem
-                post={result}
-              />
+              <SearchResultItem post={result} />
             ))}
           </div>
         </div>

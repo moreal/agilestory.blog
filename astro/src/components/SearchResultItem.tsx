@@ -15,24 +15,28 @@ export function SearchResultItem({ post }: SearchResultItemProps) {
   const { title, createdAt, id, snippet } = post;
 
   return (
-    <li class="w-full list-none">
+    <article class="group">
       <a
-        class="flex flex-col gap-2 p-3 hover:bg-gray-50 rounded-md"
+        class="block hover:text-blue-600 transition-colors duration-200"
         href={`${id}`}
       >
-        <div class="flex flex-row gap-4 items-start">
+        <div class="flex items-baseline gap-4">
           <YmdDate
             date={createdAt}
-            class="font-light w-24 text-gray-400 text-xs"
+            class="text-sm text-gray-500 flex-shrink-0"
           />
-          <span class="border-b-2 font-medium">{title}</span>
-        </div>
-        {snippet && (
-          <div class="text-sm text-gray-600 ml-28 search-snippet">
-            <span dangerouslySetInnerHTML={{ __html: snippet }} />
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-medium text-gray-900 group-hover:text-blue-600 transition-colors duration-200">
+              {title}
+            </h3>
+            {snippet && (
+              <div class="mt-1 text-sm text-gray-600 search-snippet">
+                <span dangerouslySetInnerHTML={{ __html: snippet }} />
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </a>
-    </li>
+    </article>
   );
 }
