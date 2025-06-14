@@ -18,7 +18,7 @@ export function SearchResultItem({ post }: SearchResultItemProps) {
     <article className="group">
       <a
         className="block hover:text-blue-600 transition-colors duration-200"
-        href={`${id}`}
+        href={`/${id}`}
       >
         <div className="flex items-baseline gap-4">
           <YmdDate
