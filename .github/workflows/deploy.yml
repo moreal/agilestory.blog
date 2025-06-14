@@ -30,6 +30,8 @@ jobs:
 
       - name: Build step
         run: "deno task web:build"
+      
+      - run: cp CNAME astro/dist/CNAME
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
