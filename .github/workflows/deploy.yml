@@ -3,10 +3,6 @@ on:
   push:
     branches:
       - main
-      - migrate-to-astro
-  pull_request:
-    branches: main
-  workflow_dispatch:
 
 jobs:
   deploy:
