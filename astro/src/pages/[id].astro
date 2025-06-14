@@ -39,6 +39,16 @@ const currentIndex = validPosts.findIndex((p) => p.id === Number(id));
 const prevPost = currentIndex > 0 ? validPosts[currentIndex - 1] : null;
 const nextPost = currentIndex < validPosts.length - 1 ? validPosts[currentIndex + 1] : null;
 
+// Create excerpt for description if not provided
+const stripHtml = (html: string) => html.replace(/<[^>]*>/g, '');
+const createExcerpt = (text: string, maxLength = 160) => {
+  const stripped = stripHtml(text);
+  return stripped.length > maxLength 
+    ? stripped.substring(0, maxLength).trim() + '...'
+    : stripped;
+};
+const postExcerpt = post.excerpt || createExcerpt(post.body);
+
 
 const regex =
   /(href|src)="https:\/\/web\.archive\.org\/web\/[^\/]+\/(http[^"]+)"/g;
@@ -68,7 +78,7 @@ const processedBody = post.body.replaceAll(/<hr>/g, '<hr class="my-4">')
   );
 ---
 
-<Layout title={post.title}>
+<Layout title={post.title} description={postExcerpt} image={post.image} imageAlt={post.imageAlt}>
   <!-- Post Content -->
   <article class="max-w-4xl mx-auto">
     <header class="mb-12 text-center">

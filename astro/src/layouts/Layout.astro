@@ -6,12 +6,24 @@ export interface Props {
   title?: string;
   description?: string;
   keywords?: string[];
+  /** Custom Open Graph image URL (can be relative or absolute) */
+  image?: string;
+  /** Alt text for the Open Graph image. Defaults to page title if not provided */
+  imageAlt?: string;
 }
 
-const { title, description, keywords } = Astro.props;
+const { title, description, keywords, image, imageAlt } = Astro.props;
 const pageTitle = title ? `${title} - ${constants.TITLE}` : constants.TITLE;
 const pageDescription = description || "애자일 이야기 복원 프로젝트";
 const pageKeywords = keywords || ["애자일 이야기", "agile"];
+
+// Create absolute URL for image (required for Open Graph)
+const baseUrl = Astro.site || new URL(Astro.url.origin);
+const defaultImage = "/og-default.svg";
+const pageImage = image 
+  ? new URL(image, baseUrl).href 
+  : new URL(defaultImage, baseUrl).href;
+const pageImageAlt = imageAlt || pageTitle;
 ---
 
 <!DOCTYPE html>
@@ -29,11 +41,15 @@ const pageKeywords = keywords || ["애자일 이야기", "agile"];
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
+    <meta property="og:image" content={pageImage} />
+    <meta property="og:image:alt" content={pageImageAlt} />
     
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary" />
+    <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:title" content={pageTitle} />
     <meta property="twitter:description" content={pageDescription} />
+    <meta property="twitter:image" content={pageImage} />
+    <meta property="twitter:image:alt" content={pageImageAlt} />
 
     <link rel="stylesheet" href="/styles.css" />
     
