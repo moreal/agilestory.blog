@@ -14,14 +14,16 @@
     "@std/async": "jsr:@std/async@^1.0.12",
     "@std/testing": "jsr:@std/testing@^1.0.11",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
+    "preact": "npm:preact@^10.26.9",
     "flexsearch": "npm:flexsearch@^0.8.158",
     "$std/": "https://deno.land/std@0.216.0/",
-    "@/": "./"
+    "@/": "./shared/"
   },
   "nodeModulesDir": "auto",
   "unstable": ["temporal", "kv"],
   "compilerOptions": {
     "lib": [
+      "dom",
       "deno.ns",
       "deno.unstable"
     ],
