@@ -17,16 +17,16 @@ const posts = data.filter((post) => post.createdAt)
 
   <!-- Posts List -->
    <div class="flex w-full justify-center">
-    <div class="space-y-8 max-w-[680px]">
+    <div class="space-y-6 max-w-[680px]">
       {posts.map((post) => (
         <article class="group">
           <div class="flex items-baseline gap-4">
             <YmdDate 
               date={post.createdAt} 
-              class="text-sm text-gray-500 flex-shrink-0"
+              class="text-sm font-mono text-gray-500 flex-shrink-0"
             />
             <div class="min-w-0">
-              <h2 class="text-xl font-medium leading-tight">
+              <h2 class="text-lg font-medium leading-tight">
                 <a 
                   href={`/${post.id}`}
                   class="text-gray-900 hover:text-blue-600 transition-colors duration-200"

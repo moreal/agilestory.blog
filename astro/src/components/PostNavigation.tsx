@@ -64,18 +64,20 @@ function NavigationItemOrSpacer(
 export function PostNavigation({ prevPost, nextPost }: PostNavigationProps) {
   return (
     <nav class="mt-8 mb-8">
-      <ul class="flex gap-4">
-        <NavigationItemOrSpacer
-          post={prevPost}
-          navigationMessage={`< ${constants.PREVIOUS_POST_MESSAGE}`}
-          textOrder="left"
-        />
-        <NavigationItemOrSpacer
-          post={nextPost}
-          navigationMessage={`${constants.NEXT_POST_MESSAGE} >`}
-          textOrder="right"
-        />
-      </ul>
+      <div class="max-w-4xl mx-auto">
+        <ul class="flex gap-4">
+          <NavigationItemOrSpacer
+            post={prevPost}
+            navigationMessage={`< ${constants.PREVIOUS_POST_MESSAGE}`}
+            textOrder="left"
+          />
+          <NavigationItemOrSpacer
+            post={nextPost}
+            navigationMessage={`${constants.NEXT_POST_MESSAGE} >`}
+            textOrder="right"
+          />
+        </ul>
+      </div>
     </nav>
   );
 }

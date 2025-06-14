@@ -73,20 +73,22 @@ const processedBody = post.body.replaceAll(/<hr>/g, '<hr class="my-4">')
   <!-- Post Content -->
   <article class="max-w-4xl mx-auto">
     <header class="mb-12 text-center">
-      <nav class="mb-8 text-left">
-        <a 
-          href="/" 
-          class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200 group"
-        >
-          <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-          </svg>
-          목록으로 가기
-        </a>
-      </nav>
+      <div class="max-w-4xl mx-auto">
+        <nav class="mb-8 text-left">
+          <a 
+            href="/" 
+            class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200 group"
+          >
+            <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            목록으로 가기
+          </a>
+        </nav>
+      </div>
       
       <div class="space-y-6">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight tracking-tight">
+        <h1 class="text-2xl font-bold text-gray-900 leading-tight tracking-tight">
           {post.title}
         </h1>
         
