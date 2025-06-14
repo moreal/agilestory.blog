@@ -18,7 +18,6 @@ function NavigationItem(
   },
 ) {
   const textOrderClass = textOrder === "left" ? "text-left" : "text-right";
-  const arrowIcon = textOrder === "left" ? "←" : "→";
 
   return (
     <li class={`flex-1 ${textOrderClass}`}>
@@ -27,7 +26,7 @@ function NavigationItem(
         class="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors duration-200"
       >
         <div class="text-xs text-blue-600 font-medium mb-1">
-          {arrowIcon} {navigationMessage}
+          {navigationMessage}
         </div>
         <p class="text-sm font-medium text-gray-900 line-clamp-2">
           {title}
@@ -68,12 +67,12 @@ export function PostNavigation({ prevPost, nextPost }: PostNavigationProps) {
         <ul class="flex gap-4">
           <NavigationItemOrSpacer
             post={prevPost}
-            navigationMessage={constants.PREVIOUS_POST_MESSAGE}
+            navigationMessage={`← ${constants.PREVIOUS_POST_MESSAGE}`}
             textOrder="left"
           />
           <NavigationItemOrSpacer
             post={nextPost}
-            navigationMessage={constants.NEXT_POST_MESSAGE}
+            navigationMessage={`${constants.NEXT_POST_MESSAGE} →`}
             textOrder="right"
           />
         </ul>
