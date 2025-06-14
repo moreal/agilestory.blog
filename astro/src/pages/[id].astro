@@ -40,46 +40,33 @@ const currentIndex = validPosts.findIndex((p) => p.id === Number(id));
 const prevPost = currentIndex > 0 ? validPosts[currentIndex - 1] : null;
 const nextPost = currentIndex < validPosts.length - 1 ? validPosts[currentIndex + 1] : null;
 
-// Process content
-let processedBody = post.body;
 
-// Remove Internet Archive wrapper from URLs
-processedBody = processedBody.replace(
-  /https:\/\/web\.archive\.org\/web\/\d+\//g,
-  ""
-);
+const regex =
+  /(href|src)="https:\/\/web\.archive\.org\/web\/[^\/]+\/(http[^"]+)"/g;
+const processedBody = post.body.replaceAll(/<hr>/g, '<hr class="my-4">')
+  .replace(
+    regex,
+    (match: string, attribute: string, url: string) => {
+      const SELF = "http://agile.egloos.com";
+      const ALLOWED_PREFIXES = [
+        "http://www.yes24.com",
+        "http://www.youtube.com",
+      ] as const;
 
-// Allow specific external domains and internal links
-const allowedDomains = ["yes24.com", "youtube.com"];
-const domainRegex = new RegExp(
-  `https?:\\/\\/(?:www\\.)?(${allowedDomains.join("|")})`,
-  "gi"
-);
+      if (url.startsWith(SELF)) {
+        const newUrl = url.replace(SELF, "");
+        return `${attribute}="${newUrl}"`;
+      }
 
-// Process links
-processedBody = processedBody.replace(
-  /<a\s+([^>]*?)href="([^"]*?)"([^>]*?)>/gi,
-  (match, beforeHref, url, afterHref) => {
-    // Allow internal links (starting with /)
-    if (url.startsWith("/")) {
+      for (const prefix of ALLOWED_PREFIXES) {
+        if (url.startsWith(prefix)) {
+          return `${attribute}="${url}"`;
+        }
+      }
+
       return match;
-    }
-    
-    // Allow specific domains
-    if (domainRegex.test(url)) {
-      return match;
-    }
-    
-    // // Convert other external links to span
-    return `<a ${beforeHref}href=${match}${afterHref}`;
-  }
-);
-
-// Add CSS classes to hr tags
-processedBody = processedBody.replace(
-  /<hr\s*\/?>/gi,
-  '<hr class="my-8 border-gray-300" />'
-);
+    },
+  );
 ---
 
 <Layout title={post.title}>
