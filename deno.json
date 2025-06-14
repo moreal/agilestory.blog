@@ -1,7 +1,25 @@
 {
+  "workspace": {
+    "members": ["./shared", "./astro"]
+  },
   "tasks": {
     "tool:download": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents shared/tools/main.ts download",
     "tool:dump-file": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents shared/tools/main.ts dump-file",
+
+    "web:dev": "deno task --cwd astro dev",
+    "web:build": "deno task --cwd astro build",
+    "web:preview": "deno task --cwd astro preview",
+    "web:check": "deno task --cwd astro check && deno fmt --check && deno lint",
+
+    "shared:test": "deno task --cwd shared test",
+    "shared:check": "deno task --cwd shared check",
+    "shared:fmt": "deno task --cwd shared fmt",
+    "shared:lint": "deno task --cwd shared lint",
+
+    "test": "deno task shared:test",
+    "check": "deno task shared:check && deno task web:check",
+    "fmt": "deno fmt",
+    "lint": "deno lint",
 
     "astro:dev": "cd astro && deno run -A npm:astro dev",
     "astro:build": "cd astro && deno run -A npm:astro build",

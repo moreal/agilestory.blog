@@ -4,6 +4,7 @@ on:
     branches: main
   pull_request:
     branches: main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -11,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write # Needed for auth with Deno Deploy
       contents: read # Needed to clone the repository
 
     steps:
@@ -29,8 +29,8 @@ jobs:
       - name: Build step
         run: "deno task web:build"
 
-      - name: Upload to Deno Deploy
-        uses: denoland/deployctl@v1
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          project: "agilestory"
-          entrypoint: "main.ts"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./astro/dist

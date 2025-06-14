@@ -1,0 +1,32 @@
+{
+  "name": "@agilestory/shared",
+  "version": "1.0.0",
+  "exports": {
+    ".": "./mod.ts",
+    "./models": "./models/mod.ts",
+    "./repositories": "./repositories/mod.ts",
+    "./services": "./services/mod.ts",
+    "./infra": "./infra/mod.ts",
+    "./tools": "./tools/mod.ts"
+  },
+  "imports": {
+    "@logtape/logtape": "jsr:@logtape/logtape@^0.9.0",
+    "@std/assert": "jsr:@std/assert@^1.0.12",
+    "@std/async": "jsr:@std/async@^1.0.12",
+    "@std/testing": "jsr:@std/testing@^1.0.11",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
+    "$std/": "https://deno.land/std@0.216.0/"
+  },
+  "compilerOptions": {
+    "lib": [
+      "deno.ns",
+      "deno.unstable"
+    ]
+  },
+  "tasks": {
+    "test": "deno test --allow-read --allow-write --allow-env --allow-net",
+    "fmt": "deno fmt",
+    "lint": "deno lint",
+    "check": "deno check **/*.ts"
+  }
+}

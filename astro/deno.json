@@ -1,0 +1,40 @@
+{
+  "name": "@agilestory/web",
+  "version": "1.0.0",
+  "exports": {
+    ".": "./src/pages/index.astro"
+  },
+  "imports": {
+    "@astrojs/check": "npm:@astrojs/check@^0.9.4",
+    "@astrojs/preact": "npm:@astrojs/preact@^4.1.0",
+    "@astrojs/tailwind": "npm:@astrojs/tailwind@^6.0.2",
+    "astro": "npm:astro@^5.9.2",
+    "preact": "npm:preact@^10.26.9",
+    "tailwindcss": "npm:tailwindcss@^3.4.17",
+    "typescript": "npm:typescript@^5.8.3",
+    "flexsearch": "npm:flexsearch@^0.8.158",
+    "@std/assert": "jsr:@std/assert@^1.0.12",
+    "@std/async": "jsr:@std/async@^1.0.12",
+    "@std/testing": "jsr:@std/testing@^1.0.11",
+    "@agilestory/shared": "../shared/mod.ts",
+    "@/": "../shared/"
+  },
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "deno.ns",
+      "deno.unstable"
+    ],
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "types": ["@types/deno"]
+  },
+  "tasks": {
+    "dev": "deno run -A npm:astro dev",
+    "build": "deno run -A npm:astro build",
+    "preview": "deno run -A npm:astro preview",
+    "check": "deno run -A npm:astro check",
+    "fmt": "deno fmt",
+    "lint": "deno lint"
+  }
+}
