@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "preact/hooks";
-import { SearchResultItem, type SearchResultPost } from "./SearchResultItem";
+import { SearchResultItem, type SearchResultPost } from "./SearchResultItem.tsx";
 import { extractSnippet } from "../../../shared/services/snippet.ts";
 
 interface Post {
@@ -25,13 +25,31 @@ export function SearchPage({ posts }: SearchPageProps) {
     [posts],
   );
 
-  // Get initial query from URL on component mount
+  // Get initial query from URL on component mount and listen for URL changes
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const q = urlParams.get("q");
-    if (q) {
-      setQuery(q);
-    }
+    const updateQueryFromURL = () => {
+      const urlParams = new URLSearchParams(globalThis.location.search);
+      const q = urlParams.get("q");
+      setQuery(q || "");
+    };
+
+    // Set initial query
+    updateQueryFromURL();
+
+    // Listen for popstate events (back/forward button)
+    globalThis.addEventListener("popstate", updateQueryFromURL);
+
+    // Listen for URL changes (if using pushState)
+    const originalPushState = globalThis.history.pushState;
+    globalThis.history.pushState = function(...args) {
+      originalPushState.apply(globalThis.history, args);
+      updateQueryFromURL();
+    };
+
+    return () => {
+      globalThis.removeEventListener("popstate", updateQueryFromURL);
+      globalThis.history.pushState = originalPushState;
+    };
   }, []);
 
   // Perform search when query changes
@@ -97,55 +115,9 @@ export function SearchPage({ posts }: SearchPageProps) {
     return limitedResults;
   }, [query, validPosts]);
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const searchQuery = formData.get("q") as string;
-
-    if (searchQuery) {
-      setQuery(searchQuery.trim());
-      // Update URL without page reload
-      const url = new URL(window.location.href);
-      url.searchParams.set("q", searchQuery.trim());
-      window.history.pushState({}, "", url);
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (!value.trim()) {
-      setQuery("");
-      // Clear URL parameter
-      const url = new URL(window.location.href);
-      url.searchParams.delete("q");
-      window.history.pushState({}, "", url);
-    }
-  };
-
   return (
     <div className="w-full flex justify-center">
       <div className="max-w-[680px] w-full">
-        {/* Search Form */}
-        <div className="mb-8">
-          <form onSubmit={handleSearch} className="flex gap-2">
-            <input
-              type="text"
-              name="q"
-              defaultValue={query}
-              onChange={handleInputChange}
-              placeholder="검색할 키워드를 입력하세요"
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-              autoFocus
-            />
-            <button
-              type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
-            >
-              검색
-            </button>
-          </form>
-        </div>
-
         {/* Search Results */}
         {status === "no-query" && (
           <div className="text-center py-16">
