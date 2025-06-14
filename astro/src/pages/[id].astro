@@ -1,0 +1,136 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { PostNavigation } from "../components/PostNavigation.tsx";
+import { FloatingButton } from "../components/FloatingButton.tsx";
+import data from "../../../data.json";
+
+export async function getStaticPaths() {
+  // Generate paths for all posts with valid createdAt
+  const validPosts = data.filter((post) => post.createdAt);
+
+  return validPosts.map((post) => ({
+    params: { id: post.id.toString() },
+  }));
+}
+
+const { id } = Astro.params;
+
+// Find the current post
+const post = data.find((p) => p.id === Number(id));
+
+if (!post) {
+  // Return 404 response (Astro will automatically serve the 404.astro page)
+  return new Response(null, {
+    status: 404,
+    statusText: 'Not Found'
+  });
+}
+
+// Filter and sort posts for navigation
+const validPosts = data.filter((p) => p.createdAt)
+  .map((p) => ({
+    ...p,
+    createdAt: new Date(p.createdAt as string),
+  }));
+
+// Find current post index for navigation
+const currentIndex = validPosts.findIndex((p) => p.id === Number(id));
+const prevPost = currentIndex > 0 ? validPosts[currentIndex - 1] : null;
+const nextPost = currentIndex < validPosts.length - 1 ? validPosts[currentIndex + 1] : null;
+
+
+const regex =
+  /(href|src)="https:\/\/web\.archive\.org\/web\/[^\/]+\/(http[^"]+)"/g;
+const processedBody = post.body.replaceAll(/<hr>/g, '<hr class="my-4">')
+  .replace(
+    regex,
+    (match: string, attribute: string, url: string) => {
+      const SELF = "http://agile.egloos.com";
+      const ALLOWED_PREFIXES = [
+        "http://www.yes24.com",
+        "http://www.youtube.com",
+      ] as const;
+
+      if (url.startsWith(SELF)) {
+        const newUrl = url.replace(SELF, "");
+        return `${attribute}="${newUrl}"`;
+      }
+
+      for (const prefix of ALLOWED_PREFIXES) {
+        if (url.startsWith(prefix)) {
+          return `${attribute}="${url}"`;
+        }
+      }
+
+      return match;
+    },
+  );
+---
+
+<Layout title={post.title}>
+  <!-- Post Content -->
+  <article class="max-w-4xl mx-auto">
+    <header class="mb-12 text-center">
+      <div class="max-w-4xl mx-auto">
+        <nav class="mb-8 text-left">
+          <a 
+            href="/" 
+            class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200 group"
+          >
+            <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            목록으로 가기
+          </a>
+        </nav>
+      </div>
+      
+      <div class="space-y-6">
+        <h1 class="text-2xl font-bold text-gray-900 leading-tight tracking-tight">
+          {post.title}
+        </h1>
+        
+        {post.createdAt && (
+          <div class="flex flex-row justify-center items-center gap-3">
+            <time class="text-sm text-gray-600">
+              {new Date(post.createdAt).toLocaleDateString('ko-KR', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+              })}
+            </time>
+            <span class="text-gray-400">·</span>
+            <a 
+            href={post.internetArchiveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+              </svg>
+              Internet Archive
+            </a>
+          </div>
+        )}
+        
+        <div class="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-500 mx-auto rounded-full"></div>
+      </div>
+    </header>
+
+    <div class="flex justify-center">
+      <div 
+        class="prose prose-lg prose-blue prose-headings:text-gray-900 prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-blockquote:border-blue-200 prose-blockquote:bg-blue-50/50 prose-blockquote:rounded-lg prose-blockquote:p-4 post-content"
+        set:html={processedBody}
+      >
+      </div>
+    </div>
+  </article>
+
+  <!-- Post Navigation -->
+  <PostNavigation prevPost={prevPost} nextPost={nextPost} />
+
+  <!-- Floating Button -->
+  <FloatingButton client:load />
+</Layout>

@@ -1,0 +1,52 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+---
+
+<Layout title="페이지를 찾을 수 없습니다">
+  <PageHeader />
+
+  <!-- 404 Content -->
+  <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-16 text-center">
+    <div class="max-w-md mx-auto">
+      <!-- 404 Illustration -->
+      <div class="relative mb-8">
+        <div class="text-8xl font-black bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent opacity-20 select-none">
+          404
+        </div>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <svg class="w-20 h-20 text-blue-500 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">
+        페이지를 찾을 수 없습니다
+      </h2>
+      <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+        요청하신 페이지가 존재하지 않거나<br />
+        이동되었을 수 있습니다.
+      </p>
+      
+      <div class="space-y-6">
+        <div>
+          <a 
+            href="/"
+            class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-500/30 transform hover:scale-105 active:scale-95 transition-all duration-200"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            홈으로 돌아가기
+          </a>
+        </div>
+        
+        <div class="text-sm text-gray-500 space-y-1">
+          <p>또는 위의 검색창을 사용해</p>
+          <p>원하는 내용을 찾아보세요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

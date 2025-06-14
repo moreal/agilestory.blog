@@ -1,0 +1,17 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { SearchPage } from "../components/SearchPage";
+import dataModule from "../../../data.json";
+
+const data = dataModule as any;
+
+// Get search query from URL parameters for PageHeader
+const url = new URL(Astro.request.url);
+const q = url.searchParams.get("q");
+---
+
+<Layout title={q ? `"${q}" 검색 결과` : "검색"}>
+  <PageHeader searchQuery={q || ""} />
+  <SearchPage posts={data} client:load />
+</Layout>

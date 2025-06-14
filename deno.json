@@ -1,15 +1,25 @@
 {
+  "workspace": {
+    "members": ["./shared", "./astro"]
+  },
   "tasks": {
-    "tool:download": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents tools/main.ts download",
-    "tool:dump-file": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents tools/main.ts dump-file",
+    "tool:download": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents shared/tools/main.ts download",
+    "tool:dump-file": "deno run --allow-env=AGILEDATA --allow-net=web.archive.org --allow-write=$AGILEDATA/pages --allow-write=$AGILEDATA/contents --allow-read=$AGILEDATA/pages --allow-read=$AGILEDATA/contents shared/tools/main.ts dump-file",
 
-    "web:check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
-    "web:cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run --unstable -A -",
-    "web:manifest": "deno task cli manifest $(pwd)",
-    "web:start": "deno run -A --watch=static/,routes/ dev.ts",
-    "web:build": "deno run -A dev.ts build",
-    "web:preview": "deno run -A main.ts",
-    "web:update": "deno run -A -r https://fresh.deno.dev/update ."
+    "web:dev": "deno task --cwd astro dev",
+    "web:build": "deno task --cwd astro build",
+    "web:preview": "deno task --cwd astro preview",
+    "web:check": "deno task --cwd astro check && deno fmt --check && deno lint",
+
+    "shared:test": "deno task --cwd shared test",
+    "shared:check": "deno task --cwd shared check",
+    "shared:fmt": "deno task --cwd shared fmt",
+    "shared:lint": "deno task --cwd shared lint",
+
+    "test": "deno task shared:test",
+    "check": "deno task shared:check && deno task web:check",
+    "fmt": "deno fmt",
+    "lint": "deno lint"
   },
   "imports": {
     "@logtape/logtape": "jsr:@logtape/logtape@^0.9.0",
@@ -17,37 +27,20 @@
     "@std/async": "jsr:@std/async@^1.0.12",
     "@std/testing": "jsr:@std/testing@^1.0.11",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
+    "preact": "npm:preact@^10.26.9",
     "flexsearch": "npm:flexsearch@^0.8.158",
-    "$fresh/": "https://deno.land/x/fresh@1.7.3/",
-    "preact": "https://esm.sh/preact@10.22.0",
-    "preact/": "https://esm.sh/preact@10.22.0/",
-    "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
-    "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
-    "tailwindcss": "npm:tailwindcss@3.4.17",
-    "tailwindcss/": "npm:/tailwindcss@3.4.17/",
-    "tailwindcss/plugin": "npm:/tailwindcss@3.4.17/plugin.js",
     "$std/": "https://deno.land/std@0.216.0/",
-    "@/": "./"
+    "@/": "./shared/"
   },
   "nodeModulesDir": "auto",
   "unstable": ["temporal", "kv"],
   "compilerOptions": {
     "lib": [
+      "dom",
       "deno.ns",
       "deno.unstable"
     ],
     "jsx": "react-jsx",
     "jsxImportSource": "preact"
-  },
-  "exclude": [
-    "**/_fresh/*"
-  ],
-  "lint": {
-    "rules": {
-      "tags": [
-        "fresh",
-        "recommended"
-      ]
-    }
   }
 }
