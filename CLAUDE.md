@@ -9,16 +9,16 @@ code in this repository.
 
 ```bash
 # Start development server with file watching
-deno task astro:dev
+deno task web:dev
 
 # Build the application
-deno task astro:build
+deno task web:build
 
 # Preview production build
-deno task astro:preview
+deno task web:preview
 
 # Lint, format, and type check
-deno task astro:check
+deno task web:check
 ```
 
 ### Data Management
