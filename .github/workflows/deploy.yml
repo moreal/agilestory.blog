@@ -1,7 +1,7 @@
 name: Deploy
 on:
   push:
-    branches: 
+    branches:
       - main
       - migrate-to-astro
   pull_request:
@@ -30,7 +30,7 @@ jobs:
 
       - name: Build step
         run: "deno task web:build"
-      
+
       - run: cp CNAME astro/dist/CNAME
 
       - name: Deploy to GitHub Pages
