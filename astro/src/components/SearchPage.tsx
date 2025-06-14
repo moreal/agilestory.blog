@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from "preact/hooks";
-import { SearchResultItem, type SearchResultPost } from "./SearchResultItem.tsx";
+import {
+  SearchResultItem,
+  type SearchResultPost,
+} from "./SearchResultItem.tsx";
 import { extractSnippet } from "../../../shared/services/snippet.ts";
 
 interface Post {
@@ -41,7 +44,7 @@ export function SearchPage({ posts }: SearchPageProps) {
 
     // Listen for URL changes (if using pushState)
     const originalPushState = globalThis.history.pushState;
-    globalThis.history.pushState = function(...args) {
+    globalThis.history.pushState = function (...args) {
       originalPushState.apply(globalThis.history, args);
       updateQueryFromURL();
     };

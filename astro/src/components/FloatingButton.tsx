@@ -1,6 +1,6 @@
 export function FloatingButton() {
   const scrollTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    globalThis.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (

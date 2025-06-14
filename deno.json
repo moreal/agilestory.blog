@@ -19,12 +19,7 @@
     "test": "deno task shared:test",
     "check": "deno task shared:check && deno task web:check",
     "fmt": "deno fmt",
-    "lint": "deno lint",
-
-    "astro:dev": "cd astro && deno run -A npm:astro dev",
-    "astro:build": "cd astro && deno run -A npm:astro build",
-    "astro:preview": "cd astro && deno run -A npm:astro preview",
-    "astro:check": "cd astro && deno run -A npm:astro check && deno fmt --check && deno lint"
+    "lint": "deno lint"
   },
   "imports": {
     "@logtape/logtape": "jsr:@logtape/logtape@^0.9.0",
