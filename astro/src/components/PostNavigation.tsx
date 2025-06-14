@@ -72,7 +72,7 @@ export function PostNavigation({ prevPost, nextPost }: PostNavigationProps) {
           />
           <NavigationItemOrSpacer
             post={nextPost}
-            navigationMessage={`$${constants.NEXT_POST_MESSAGE} →`}
+            navigationMessage={`${constants.NEXT_POST_MESSAGE} →`}
             textOrder="right"
           />
         </ul>
