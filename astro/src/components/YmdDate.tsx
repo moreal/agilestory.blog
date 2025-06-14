@@ -9,15 +9,16 @@ function formatDate(date: Date): string {
 interface YmdDateProps {
   date: Date;
   class?: string;
+  className?: string;
 }
 
 export function YmdDate(props: YmdDateProps) {
   const defaultClass = "text-sm font-medium text-gray-500";
-  const className = props.class || defaultClass;
+  const className = props.class || props.className || defaultClass;
 
   return (
     <time
-      class={className}
+      className={className}
       dateTime={props.date.toISOString()}
       title={props.date.toLocaleDateString("ko-KR", {
         year: "numeric",

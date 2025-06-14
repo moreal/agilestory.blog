@@ -1,12 +1,5 @@
 ---
-import SearchForm from "./SearchForm.astro";
-import * as constants from "../../../shared/constants.ts";
-
-export interface Props {
-  searchQuery?: string;
-}
-
-const { searchQuery } = Astro.props;
+import * as constants from "../../../shared/constants";
 ---
 
 <header class="mb-8">
@@ -16,9 +9,5 @@ const { searchQuery } = Astro.props;
         {constants.TITLE}
       </a>
     </h1>
-  </div>
-  
-  <div class="mt-6 flex justify-center">
-    <SearchForm query={searchQuery} className="w-full max-w-lg" />
   </div>
 </header>
