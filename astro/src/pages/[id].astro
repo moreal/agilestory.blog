@@ -32,8 +32,7 @@ const validPosts = data.filter((p) => p.createdAt)
   .map((p) => ({
     ...p,
     createdAt: new Date(p.createdAt as string),
-  }))
-  .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }));
 
 // Find current post index for navigation
 const currentIndex = validPosts.findIndex((p) => p.id === Number(id));
