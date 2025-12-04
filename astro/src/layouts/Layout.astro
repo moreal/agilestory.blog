@@ -3,9 +3,9 @@ import * as constants from "../../../shared/constants.ts";
 import "../styles/global.css";
 
 export interface Props {
-  title?: string;
-  description?: string;
-  keywords?: string[];
+    title?: string;
+    description?: string;
+    keywords?: string[];
 }
 
 const { title, description, keywords } = Astro.props;
@@ -14,67 +14,87 @@ const pageDescription = description || "애자일 이야기 복원 프로젝트"
 const pageKeywords = keywords || ["애자일 이야기", "agile"];
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="description" content={pageDescription} />
-    <meta name="keywords" content={pageKeywords.join(", ")} />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="index, follow" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={pageDescription} />
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary" />
-    <meta property="twitter:title" content={pageTitle} />
-    <meta property="twitter:description" content={pageDescription} />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={pageKeywords.join(", ")} />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="robots" content="index, follow" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
 
-    <link rel="stylesheet" href="/styles.css" />
-    
-    <title>{pageTitle}</title>
-  </head>
-  <body class="bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 text-gray-900 antialiased">
-    <div class="min-h-screen flex flex-col">
-      <!-- Warning Banner -->
-      <div class="bg-gradient-to-r from-amber-50 to-yellow-50 border-b border-amber-200/50 backdrop-blur-sm">
-        <div class="max-w-6xl mx-auto px-4 py-4">
-          <div class="flex items-center justify-center gap-3">
-            <div class="flex-shrink-0">
-              <svg class="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-              </svg>
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary" />
+        <meta property="twitter:title" content={pageTitle} />
+        <meta property="twitter:description" content={pageDescription} />
+
+        <link rel="stylesheet" href="/styles.css" />
+
+        <title>{pageTitle}</title>
+    </head>
+    <body
+        class="bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 text-gray-900 antialiased"
+    >
+        <div class="min-h-screen flex flex-col">
+            <!-- Warning Banner -->
+            <div
+                class="bg-gradient-to-r from-amber-50 to-yellow-50 border-b border-amber-200/50 backdrop-blur-sm"
+            >
+                <div class="max-w-6xl mx-auto px-4 py-4">
+                    <div class="flex items-center justify-center gap-3">
+                        <div class="flex-shrink-0">
+                            <svg
+                                class="w-5 h-5 text-amber-600"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <p
+                            class="text-sm text-amber-800 leading-relaxed"
+                            set:html={constants.WARNING_MESSAGE}
+                        />
+                    </div>
+                </div>
             </div>
-            <p class="text-sm text-amber-800 leading-relaxed text-center" set:html={constants.WARNING_MESSAGE}></p>
-          </div>
-        </div>
-      </div>
 
-      <!-- Main Content -->
-      <main class="flex-1 max-w-6xl mx-auto px-4 py-8 w-full">
-        <slot />
-      </main>
+            <!-- Main Content -->
+            <main class="flex-1 max-w-6xl mx-auto px-4 py-8 w-full">
+                <slot />
+            </main>
 
-      <!-- Footer -->
-      <footer class="bg-white/80 backdrop-blur-sm border-t border-gray-200/50 py-8 mt-16">
-        <div class="max-w-6xl mx-auto px-4">
-          <div class="text-center space-y-4">
-            <div class="text-sm text-gray-600 space-y-2">
-              <p>
-                본 사이트의 소스코드는 AGPL-3.0 라이선스로 <a href={constants.GITHUB_URL} class="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-colors">GitHub</a>에 공개되어 있습니다.
-              </p>
-              <p class="text-gray-500">
-                콘텐츠의 저작권은 원저작자에게 있습니다.
-              </p>
-            </div>
-          </div>
+            <!-- Footer -->
+            <footer
+                class="bg-white/80 backdrop-blur-sm border-t border-gray-200/50 py-8 mt-16"
+            >
+                <div class="max-w-6xl mx-auto px-4">
+                    <div class="text-center space-y-4">
+                        <div class="text-sm text-gray-600 space-y-2">
+                            <p>
+                                본 사이트의 소스코드는 AGPL-3.0 라이선스로 <a
+                                    href={constants.GITHUB_URL}
+                                    class="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-colors"
+                                    >GitHub</a
+                                >에 공개되어 있습니다.
+                            </p>
+                            <p class="text-gray-500">
+                                콘텐츠의 저작권은 원저작자에게 있습니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
-      </footer>
-    </div>
-  </body>
+    </body>
 </html>
