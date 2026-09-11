@@ -16,21 +16,25 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v4
 
-      - name: Install Deno
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v16
 
       - name: Download data.json
         run: wget https://data.agilestory.blog/data.json
 
-      - name: Build step
-        run: "deno task web:build"
+      - name: Install dependencies
+        run: nix develop -c yarn install --immutable
 
-      - run: cp CNAME astro/dist/CNAME
+      - name: Check and test
+        run: nix develop -c sh -c "yarn typecheck && yarn test"
+
+      - name: Build web
+        run: nix develop -c yarn web build
+
+      - run: cp CNAME apps/agilestory.blog/dist/CNAME
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./astro/dist
+          publish_dir: ./apps/agilestory.blog/dist

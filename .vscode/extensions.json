@@ -1,7 +1,8 @@
 {
   "recommendations": [
-    "denoland.vscode-deno",
-    "bradlc.vscode-tailwindcss",
-    "streetsidesoftware.code-spell-checker"
+    "biomejs.biome",
+    "astro-build.astro-vscode",
+    "jnoortheen.nix-ide",
+    "mkhl.direnv"
   ]
 }

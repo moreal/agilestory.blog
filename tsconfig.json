@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/core" },
+    { "path": "packages/storage" },
+    { "path": "packages/wayback" },
+    { "path": "packages/parser" },
+    { "path": "packages/sanitizer" },
+    { "path": "packages/pipeline" },
+    { "path": "packages/cli" }
+  ]
+}

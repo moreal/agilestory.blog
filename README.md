@@ -34,38 +34,44 @@ https://agilestory.blog 도메인은 제가 금전적인 어려움이 있지 않
 
 ## 프로젝트 구조
 
-이 프로젝트는 Deno monorepo로 구성되어 있습니다:
+Node.js + Yarn workspaces 모노레포이며, 로직은 [Effect](https://effect.website/) v4 로 작성되어 있습니다.
 
-- **`shared/`**: 공통 라이브러리 및 유틸리티
-  - 모델, 리포지토리, 서비스, 인프라 코드 포함
-  - 데이터 처리 도구 및 Wayback Machine 연동
-- **`astro/`**: 웹 프론트엔드 (Astro + Preact)
-  - 사용자 인터페이스 및 검색 기능
+- **`packages/core`**: 도메인 모델과 모듈 간 인터페이스(port)
+- **`packages/wayback`**: Internet Archive 에서 스냅샷 목록과 원문을 가져오는 어댑터
+- **`packages/parser`**: 원문 HTML 에서 게시글을 추출 (이글루스 파서)
+- **`packages/sanitizer`**: 본문 정제 규칙과 아카이브 링크 재작성
+- **`packages/storage`**: 파일/메모리 KV 스토어와 리포지토리
+- **`packages/pipeline`**: 동기화 → 수집(대체 스냅샷 폴백) → 내보내기 유스케이스
+- **`packages/cli`**: `agilestory sync | collect | export` 명령
+- **`packages/web`**: 아카이브 뷰어 Astro 통합(페이지·컴포넌트·스타일)
+- **`apps/agilestory.blog`**: 위 통합에 사이트 정보와 이글루스 아이디(`egloos("agile")`)만 넘기는 얇은 앱
+
+설계 문서: `docs/superpowers/specs/`
 
 ## 개발 환경 설정
 
 ### 요구사항
 
-- Deno 2.x
+- [Nix](https://nixos.org/) (flakes) — `nix develop` 로 Node.js 24 와 Yarn 4 가 준비됩니다.
+  direnv 를 쓰면 `.envrc` 가 자동으로 셸을 불러옵니다.
 
-### 개발 서버 실행
-
-```bash
-# 웹 개발 서버 시작
-deno task web:dev
-
-# 데이터 다운로드 도구 실행
-deno task tool:download
-```
-
-### 프로젝트 빌드
+### 명령
 
 ```bash
-# 웹사이트 빌드
-deno task web:build
+nix develop
+yarn install
 
-# 전체 프로젝트 검사
-deno task check
+# 데이터 파이프라인 (AGILEDATA: 캐시 디렉터리, 기본값 ./data)
+AGILEDATA=/path/to/store yarn cli sync
+AGILEDATA=/path/to/store yarn cli collect
+AGILEDATA=/path/to/store yarn cli export data.json
+
+# 웹
+yarn web dev
+yarn web build
+
+# 검사
+yarn typecheck && yarn test && yarn lint
 ```
 
 ## 전제

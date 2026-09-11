@@ -1,0 +1,25 @@
+{
+  "name": "agilestory.blog",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@agilestory/core": "workspace:*",
+    "@agilestory/web": "workspace:*",
+    "@astrojs/preact": "^4.1.0",
+    "astro": "^5.9.2",
+    "preact": "^10.26.9"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@babel/core": "^7.26.0",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  }
+}

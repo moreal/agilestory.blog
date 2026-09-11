@@ -1,136 +1,55 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with
-code in this repository.
+Guidance for AI coding agents working in this repository.
 
-## Development Commands
+## Toolchain
 
-### Web Development
+- Node.js 24 + Yarn 4 (`nodeLinker: pnpm`). Enter the dev shell with `nix develop` (or direnv `use flake`).
+- All logic is written with **Effect v4 (rc)**: services are `Context.Service` classes, wiring is `Layer`,
+  validation is `Schema`, errors are `Data.TaggedError`.
+- Relative imports use the `.ts` extension (`rewriteRelativeImportExtensions`), so the CLI runs on plain
+  Node type stripping without a build step.
 
-```bash
-# Start development server with file watching
-deno task web:dev
-
-# Build the application
-deno task web:build
-
-# Preview production build
-deno task web:preview
-
-# Lint, format, and type check
-deno task web:check
-```
-
-### Data Management
+## Commands
 
 ```bash
-# Download content from Internet Archive (requires AGILEDATA env var)
-AGILEDATA=/path/to/store deno task tool:download
-
-# Dump processed data to JSON file
-AGILEDATA=/path/to/store deno task tool:dump-file data.json
+nix develop                       # dev shell (node, yarn)
+yarn install
+yarn typecheck                    # tsc -b over all packages
+yarn test                         # vitest (+ @effect/vitest)
+yarn lint / yarn fmt              # biome
+yarn cli --help                   # data pipeline CLI
+AGILEDATA=/path yarn cli sync     # refresh snapshot list from Internet Archive
+AGILEDATA=/path yarn cli collect  # fetch + parse every post into the cache
+AGILEDATA=/path yarn cli export data.json
+yarn web dev | build | check      # apps/agilestory.blog (Astro, reads ./data.json)
 ```
 
-### Testing
-
-```bash
-# Run all tests
-deno test
-
-# Run specific test file
-deno test repositories/content/persistent.test.ts
-
-# Run tests with coverage
-deno test --coverage
-```
-
-## Architecture Overview
-
-This is an **Astro framework** application that archives and serves blog content
-from Internet Archive's Wayback Machine. The architecture follows **Clean
-Architecture principles** with clear separation of concerns.
-
-### Core Architecture Layers
-
-**Models** (`models/`): Zod-based validation schemas for `Content` and `TimeMap`
-entities with runtime type safety.
-
-**Services** (`services/`): Business logic layer including:
-
-- `WaybackMachineService`: HTTP client for Internet Archive API
-- `ContentProcessor`: Content sanitization and processing
-- Loader pattern implementations with fallback chains
-
-**Repositories** (`repositories/`): Data access abstraction using Repository
-pattern with interface-based design for both Content and TimeMap entities.
-
-**Infrastructure** (`infra/storage/`): Key-Value Store abstraction with multiple
-implementations:
-
-- `DenoKvKeyValueStore`: Deno's native KV store
-- `FileSystemKeyValueStore`: File-based storage
-- `InMemoryKeyValueStore`: Memory-based storage for testing
-
-### Data Flow Pattern
+## Layout
 
 ```
-Internet Archive API → WaybackMachineService → ContentLoader → Repository → KV Store
-                                          ↓
-Astro Pages ← ContentProvider ← FallbackContentLoader (with graceful fallback)
+packages/core       models (Schema), ports (Context.Service), errors — no external deps
+packages/wayback    Internet Archive adapter: ArchiveIndex, ArchiveFetcher (HttpClient + retry)
+packages/parser     HTML → RawPost (EgloosPostParser via linkedom)
+packages/sanitizer  RawPost → RawPost body rules; rewriteArchivedLinks for rendering
+packages/storage    KeyValueStore (fs / memory), Snapshot/Post repositories, JSON dataset writer
+packages/pipeline   use cases: syncSnapshots, collectPost(s) with snapshot fallback, exportDataset
+packages/cli        Effect CLI entry (`agilestory sync|collect|export`), production Layer wiring
+packages/web        Astro integration `agilestoryWeb(options)`: pages, components, styles, tailwind
+apps/agilestory.blog  thin site: astro.config passes site info + `egloos("agile")` + dataset path
+docs/superpowers/specs  design documents
 ```
 
-### Key Design Patterns
+Dependency direction: `cli → pipeline → {wayback, parser, sanitizer, storage} → core`; `web → core, sanitizer`; `apps/* → web, core`.
+To support another blog service, add a `PostParser` implementation and a `Blog` helper like `egloos(id)` in core.
+To publish another archive site, create a new `apps/<domain>` with only an `astro.config.mjs`.
 
-- **Dependency Injection**: Services depend on interfaces, not concrete
-  implementations
-- **Fallback Chain**: Multiple loaders with graceful degradation when primary
-  sources fail
-- **Repository Pattern**: Abstracted data access with pluggable storage backends
-- **Strategy Pattern**: Different loading strategies (repository, wayback,
-  fallback)
+## Conventions
 
-## Development Guidelines
-
-### TypeScript & Deno
-
-- Use strict TypeScript with explicit types; avoid `any`
-- Follow ES modules syntax with version-pinned imports
-- Use Deno's standard library when possible
-- Include proper permissions in commands
-- Use `Deno.test()` for unit testing
-
-### Testing Conventions
-
-- Use Korean language for test descriptions (e.g., "get()은 KeyValueStore에서
-  Content를 가져와야 합니다.")
-- Do not use `spy` in test code
-- Use `@std/assert` for assertions
-- Test with `InMemoryKeyValueStore` for isolation
-
-### Error Handling
-
-- Implement retry logic for external API calls
-- Use graceful fallbacks when primary data sources fail
-- Handle gateway timeouts for Internet Archive API
-- Use Zod for runtime validation with proper error messages
-
-### Storage Strategy
-
-The application uses a hybrid approach:
-
-- **Primary source**: Internet Archive Wayback Machine
-- **Local caching**: Key-value store for performance
-- **Static data**: Pre-processed content in `data.json`
-- **Multiple fallbacks**: Alternative archive versions when primary fails
-
-## Project Context
-
-This is a Korean-language blog archive service that displays content from
-"애자일 이야기" (Agile Story) blog archived on Internet Archive. The
-application:
-
-- Fetches content from Wayback Machine
-- Processes and sanitizes archived HTML
-- Provides search functionality
-- Serves content with proper attribution to original authors
-- Uses AGPL-3.0 license for code (content rights belong to original authors)
+- Strict TypeScript, no `any`. Prefer `Effect.gen` / `Effect.fn`; keep pure functions pure.
+- Tests live next to code as `*.test.ts`, descriptions in Korean
+  (e.g. `get()은 KeyValueStore에서 RawPost를 가져와야 합니다.`), no spies — use fake Layers and
+  `InMemoryKeyValueStore`.
+- External calls: retry only transient failures (504, transport errors); fall back to alternative
+  snapshots when parsing fails.
+- Content rights belong to the original authors; code is AGPL-3.0.

@@ -9,7 +9,8 @@
       "Bash(deno check:*)"
     ],
     "deny": [
-      "Read(.env)"
+      "Read(.env)",
+      "Read(data.json)"
     ]
   }
 }

@@ -181,3 +181,15 @@ node_modules/
 data/
 
 data.json
+
+### Yarn / Nix ###
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+.direnv
+result
+dist/
