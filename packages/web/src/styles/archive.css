@@ -1,16 +1,30 @@
 html {
+  /* klreq 4.1: 한글 글꼴을 명시적으로 포함한 폰트 스택 */
   font-family:
     ui-sans-serif,
     system-ui,
+    -apple-system,
+    "Apple SD Gothic Neo",
+    "Noto Sans KR",
+    "Malgun Gothic",
     sans-serif,
-    Apple Color Emoji,
-    Segoe UI Emoji,
-    Segoe UI Symbol,
-    Noto Color Emoji;
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji";
 }
 
 .post-content {
   margin: 0 24px;
+  /* klreq 7.2.1: 한글 조판은 양끝 맞추기를 기본으로 한다 */
+  text-align: justify;
+  /* klreq 7.2.2: 낱말 사이가 아니라 글자 사이를 배분한다 */
+  text-justify: inter-character;
+  /* klreq 7.1.2-7.1.3: 글줄 시작·끝 금칙을 엄격하게 적용 */
+  line-break: strict;
+  /* klreq 7.2.3.5: 위도우·오펀 처리 */
+  widows: 2;
+  orphans: 2;
 }
 
 @media (min-width: 728px) {
@@ -56,6 +70,14 @@ html {
 .post-content p {
   margin-block-start: 1em;
   margin-block-end: 1em;
+}
+
+.post-content sup,
+.post-content sub {
+  /* klreq 6.6.1: 첨자 크기는 어미 글자의 60~70%, 글자사이는 0 */
+  font-size: 0.65em;
+  line-height: 0;
+  letter-spacing: normal;
 }
 
 .post-content h2 {
